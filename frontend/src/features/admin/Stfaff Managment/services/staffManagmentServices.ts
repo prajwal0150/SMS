@@ -2,7 +2,7 @@ import { supabase } from "../../../../lib/supabase";
 
 import type {
   Teacher,
-  NewTeacherInput,
+  CreateTeacherInput,
   TeacherAssignment,
   NewAssignmentInput,
   StaffAttendance,
@@ -31,12 +31,71 @@ export const fetchTeachers =
 
 
 export const createTeacher = async (
-  input: NewTeacherInput
+  input: CreateTeacherInput
 ): Promise<Teacher> => {
+  // 1. Remember the admin's current session so it can be
+  // restored after the sign up below.
+  const { data: sessionData } =
+    await supabase.auth.getSession();
+
+  const adminSession =
+    sessionData?.session ?? null;
+
+  // 2. Create the teacher's real login account
+  // (Supabase auth user with email + password).
+  const { data: authData, error: authError } =
+    await supabase.auth.signUp({
+      email: input.email,
+      password: input.password,
+
+      options: {
+        data: {
+          full_name:
+            `${input.first_name} ${input.last_name}`.trim(),
+          role: "teacher",
+        },
+      },
+    });
+
+  if (authError) {
+    throw new Error(authError.message);
+  }
+
+  if (!authData.user) {
+    throw new Error(
+      "Teacher login account could not be created."
+    );
+  }
+
+  // 3. If sign up also signed the browser in as the new
+  // teacher (email auto-confirm enabled), restore the
+  // admin's session so the admin stays logged in.
+  if (authData.session) {
+    await supabase.auth.signOut();
+
+    if (adminSession) {
+      await supabase.auth.setSession({
+        access_token: adminSession.access_token,
+        refresh_token: adminSession.refresh_token,
+      });
+    }
+  }
+
+  // 4. Insert the teacher row linked to the auth user.
   const { data, error } =
     await supabase
       .from("teachers")
-      .insert(input)
+      .insert({
+        first_name: input.first_name,
+        last_name: input.last_name,
+        email: input.email,
+        phone: input.phone,
+        subject: input.subject,
+        qualification: input.qualification,
+        join_date: input.join_date,
+        status: input.status,
+        auth_user_id: authData.user.id,
+      })
       .select()
       .single();
 

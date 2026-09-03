@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 
 import useAuth from "../../auth/hooks/useAuth";
+import { useTeacherProfile } from "../hooks/useTeacherProfile";
 
 import Card from "../components/Card";
 import StatCard from "../components/StatCard";
@@ -21,9 +22,12 @@ import {
 
 const TeacherDashboardPage = () => {
   const { user } = useAuth();
+  const { profile, assignments } =
+    useTeacherProfile();
 
-  const fullName =
-    user?.user_metadata?.full_name ?? "Teacher";
+  const fullName = profile
+    ? `${profile.firstName} ${profile.lastName}`.trim()
+    : user?.user_metadata?.full_name ?? "Teacher";
 
   const today = new Date().toLocaleDateString(undefined, {
     weekday: "long",
@@ -74,7 +78,11 @@ const TeacherDashboardPage = () => {
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           label="My Classes"
-          value={teacherClasses.length}
+          value={
+            profile
+              ? assignments.length
+              : teacherClasses.length
+          }
           icon={BookOpen}
           accent="bg-indigo-600/10 text-indigo-600"
         />
@@ -97,6 +105,35 @@ const TeacherDashboardPage = () => {
           accent="bg-red-600/10 text-red-600"
         />
       </div>
+
+      {/* My classes - real data from teacher_assignments */}
+      {profile && assignments.length > 0 && (
+        <div className="mt-6">
+          <Card
+            title="My Classes"
+            subtitle="Class sections assigned to you by the admin"
+          >
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              {assignments.map((item) => (
+                <div
+                  key={item.id}
+                  className="rounded-lg border border-slate-100 bg-slate-50/60 p-4"
+                >
+                  <p className="text-sm font-semibold text-slate-900">
+                    Class {item.className}
+                    {item.section
+                      ? `-${item.section}`
+                      : ""}
+                  </p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    {item.subject}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+      )}
 
       {/* Recent assignments + notices */}
       <div className="mt-6 grid gap-6 lg:grid-cols-2">

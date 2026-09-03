@@ -3,7 +3,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import LoginPage from "./features/auth/page/LoginPage";
-import RegisterPage from "./features/auth/page/RegisterPage";
 import DashboardPage from "./features/dashboard/page/DashboardPage";
 // import ForgotPasswordPage from "./modules/auth/page/ForgotPasswordPage";
 
@@ -22,6 +21,7 @@ import AdminPlaceholderPage from "./features/admin/dashboard/page/AdminPlacehold
 import StaffManagementPage from "./features/admin/Stfaff Managment/page/StaffManagementPage";
 import StudentManagementPage from "./features/admin/StudentManagment/page/StudentManagementPage";
 import CommunicationManagementPage from "./features/admin/Comunication/page/CommunicationManagementPage";
+import AcademicManagementPage from "./features/admin/Academic/page/AcademicManagementPage";
 
 import LoadingScreen from "./components/LoadingScreen";
 
@@ -41,7 +41,7 @@ const getHomePath = (
 
   return isAdminEmail(email)
     ? "/admin/dashboard"
-    : "/dashboard";
+    : "/teacher";
 };
 
 
@@ -76,9 +76,11 @@ const App = () => {
         element={<LoginPage />}
       />
 
+      {/* Registration is handled by the admin - send
+          anyone landing on /register to the login page. */}
       <Route
         path="/register"
-        element={<RegisterPage />}
+        element={<Navigate to="/login" replace />}
       />
 
       <Route
@@ -204,6 +206,32 @@ const App = () => {
         <Route
           path="communication/emergency"
           element={<Navigate to="/admin/communication" replace />}
+        />
+
+        {/* Academic */}
+        <Route
+          path="academic"
+          element={<AcademicManagementPage />}
+        />
+        <Route
+          path="academic/exams"
+          element={<Navigate to="/admin/academic" replace />}
+        />
+        <Route
+          path="academic/timetable"
+          element={<Navigate to="/admin/academic" replace />}
+        />
+        <Route
+          path="academic/holidays"
+          element={<Navigate to="/admin/academic" replace />}
+        />
+        <Route
+          path="academic/exam-schedule"
+          element={<Navigate to="/admin/academic" replace />}
+        />
+        <Route
+          path="academic/calendar"
+          element={<Navigate to="/admin/academic" replace />}
         />
 
         <Route

@@ -21,7 +21,7 @@ const getPostLoginPath = (
 ): string =>
   isAdminEmail(email)
     ? "/admin/dashboard"
-    : "/dashboard";
+    : "/teacher";
 
 
 const LoginPage = () => {
@@ -361,20 +361,6 @@ const LoginPage = () => {
                   </span>
                 </p>
               </div>
-
-
-              <p className="mt-8 text-center text-sm text-slate-500">
-
-                Don't have an account?{" "}
-
-                <Link
-                  to="/register"
-                  className="font-semibold text-indigo-600 hover:text-indigo-700"
-                >
-                  Create account
-                </Link>
-
-              </p>
 
             </div>
 

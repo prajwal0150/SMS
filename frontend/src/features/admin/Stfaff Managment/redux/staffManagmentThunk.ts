@@ -11,7 +11,7 @@ import {
 } from "../services/staffManagmentServices";
 
 import type {
-  NewTeacherInput,
+  CreateTeacherInput,
   NewAssignmentInput,
   NewAttendanceInput,
 } from "../types/staffManagmentTypes";
@@ -48,7 +48,7 @@ export const createTeacherThunk = createAsyncThunk(
   "staffManagement/createTeacher",
 
   async (
-    input: NewTeacherInput,
+    input: CreateTeacherInput,
     { rejectWithValue }
   ) => {
     try {

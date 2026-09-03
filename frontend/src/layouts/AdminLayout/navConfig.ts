@@ -61,12 +61,7 @@ export const adminNavGroups: AdminNavGroup[] = [
     id: "academic",
     label: "Academic",
     icon: CalendarDays,
-    children: [
-      { label: "Academic Calendar", path: "/admin/academic/calendar" },
-      { label: "Timetable", path: "/admin/academic/timetable" },
-      { label: "Exams", path: "/admin/academic/exams" },
-      { label: "Holidays", path: "/admin/academic/holidays" },
-    ],
+    children: [],
   },
   {
     id: "attendance",

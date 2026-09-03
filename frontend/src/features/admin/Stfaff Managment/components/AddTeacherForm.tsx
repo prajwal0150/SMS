@@ -4,7 +4,7 @@ import { UserPlus } from "lucide-react";
 import Card from "../../dashboard/components/Card";
 
 import type {
-  NewTeacherInput,
+  CreateTeacherInput,
   TeacherStatus,
 } from "../types/staffManagmentTypes";
 
@@ -15,7 +15,7 @@ const inputClass =
 
 interface AddTeacherFormProps {
   saving: boolean;
-  onSave: (input: NewTeacherInput) => Promise<boolean>;
+  onSave: (input: CreateTeacherInput) => Promise<boolean>;
 }
 
 const todayString = (): string =>
@@ -36,6 +36,7 @@ const AddTeacherForm = ({
   const [joinDate, setJoinDate] = useState(todayString());
   const [status, setStatus] =
     useState<TeacherStatus>("active");
+  const [password, setPassword] = useState("");
 
 
   const handleSubmit = async (
@@ -52,6 +53,7 @@ const AddTeacherForm = ({
       qualification: qualification.trim() || undefined,
       join_date: joinDate,
       status,
+      password,
     });
 
     if (success) {
@@ -63,6 +65,7 @@ const AddTeacherForm = ({
       setQualification("");
       setJoinDate(todayString());
       setStatus("active");
+      setPassword("");
     }
   };
 
@@ -226,6 +229,31 @@ const AddTeacherForm = ({
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
             </select>
+          </div>
+
+          <div className="sm:col-span-2 lg:col-span-3">
+            <label
+              htmlFor="tPassword"
+              className="mb-2 block text-sm font-semibold text-slate-700"
+            >
+              Login Password
+            </label>
+            <input
+              id="tPassword"
+              type="password"
+              value={password}
+              onChange={(event) =>
+                setPassword(event.target.value)
+              }
+              required
+              minLength={6}
+              autoComplete="new-password"
+              placeholder="At least 6 characters"
+              className={inputClass}
+            />
+            <p className="mt-1.5 text-xs text-slate-500">
+              The teacher signs in to the teacher panel with this email and password.
+            </p>
           </div>
 
         </div>

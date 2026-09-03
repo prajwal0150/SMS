@@ -4,7 +4,8 @@ import { useSelector } from "react-redux";
 
 import type { RootState } from "../../redux/store";
 
-import { selectIsAuthenticated } from "../../features/auth/redux/authSelector";
+import { selectIsAuthenticated, selectUser } from "../../features/auth/redux/authSelector";
+import { isAdminEmail } from "../../features/auth/services/authService";
 
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
@@ -18,9 +19,21 @@ const TeacherLayout = () => {
       selectIsAuthenticated(state)
     );
 
+  const user =
+    useSelector((state: RootState) =>
+      selectUser(state)
+    );
+
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+
+
+  // The admin has their own panel - keep the teacher
+  // panel exclusive to teacher accounts.
+  if (isAdminEmail(user?.email)) {
+    return <Navigate to="/admin/dashboard" replace />;
   }
 
 

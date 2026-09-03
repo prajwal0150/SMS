@@ -10,6 +10,7 @@ export interface Teacher {
   qualification: string | null;
   join_date: string | null;
   status: TeacherStatus;
+  auth_user_id: string | null;
   created_at: string;
 }
 
@@ -23,6 +24,12 @@ export interface NewTeacherInput {
   join_date?: string;
   status?: TeacherStatus;
 }
+
+// Everything needed to create a teacher together with
+// their login account (Supabase auth user).
+export type CreateTeacherInput = NewTeacherInput & {
+  password: string;
+};
 
 
 export interface TeacherAssignment {

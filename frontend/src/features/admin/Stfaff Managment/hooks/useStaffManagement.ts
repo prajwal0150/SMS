@@ -24,7 +24,7 @@ import {
 } from "../redux/staffManagmentThunk";
 
 import type {
-  NewTeacherInput,
+  CreateTeacherInput,
   NewAssignmentInput,
   NewAttendanceInput,
 } from "../types/staffManagmentTypes";
@@ -91,13 +91,15 @@ export const useStaffManagement = () => {
 
 
   const handleCreateTeacher = useCallback(
-    async (input: NewTeacherInput) => {
+    async (input: CreateTeacherInput) => {
       try {
         await dispatch(
           createTeacherThunk(input)
         ).unwrap();
 
-        toast.success("Teacher added successfully.");
+        toast.success(
+          "Teacher added. Login created for their email."
+        );
 
         return true;
       } catch (err) {
