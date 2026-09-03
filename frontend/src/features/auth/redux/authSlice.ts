@@ -18,6 +18,7 @@ interface AuthState {
   loading: boolean;
   error: string | null;
   isAuthenticated: boolean;
+  isSessionChecked: boolean;
 }
 
 
@@ -26,6 +27,7 @@ const initialState: AuthState = {
   loading: false,
   error: null,
   isAuthenticated: false,
+  isSessionChecked: false,
 };
 
 
@@ -168,12 +170,34 @@ const authSlice = createSlice({
 
     builder
       .addCase(
+        getCurrentUserThunk.pending,
+        (state) => {
+          state.loading = true;
+        }
+      )
+
+      .addCase(
         getCurrentUserThunk.fulfilled,
         (state, action) => {
+          state.loading = false;
+          state.isSessionChecked = true;
+
           state.user = action.payload;
 
           state.isAuthenticated =
             !!action.payload;
+        }
+      )
+
+      .addCase(
+        getCurrentUserThunk.rejected,
+        (state) => {
+          state.loading = false;
+          state.isSessionChecked = true;
+
+          state.user = null;
+          state.isAuthenticated = false;
+          state.error = null;
         }
       );
 

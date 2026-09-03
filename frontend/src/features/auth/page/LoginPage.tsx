@@ -13,6 +13,15 @@ import toast from "react-hot-toast";
 
 import useAuth from "../hooks/useAuth";
 import { loginThunk } from "../redux/authThunk";
+import { isAdminEmail } from "../services/authService";
+
+
+const getPostLoginPath = (
+  email?: string | null
+): string =>
+  isAdminEmail(email)
+    ? "/admin/dashboard"
+    : "/dashboard";
 
 
 const LoginPage = () => {
@@ -20,6 +29,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const {
+    user,
     login,
     loading,
     error,
@@ -41,10 +51,10 @@ const LoginPage = () => {
   useEffect(() => {
 
     if (isAuthenticated) {
-      navigate("/dashboard");
+      navigate(getPostLoginPath(user?.email));
     }
 
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, user?.email, navigate]);
 
 
   useEffect(() => {
@@ -74,7 +84,11 @@ const LoginPage = () => {
 
       toast.success("Welcome back!");
 
-      navigate("/dashboard");
+      navigate(
+        getPostLoginPath(
+          result.payload?.user?.email
+        )
+      );
 
     }
 
@@ -329,6 +343,24 @@ const LoginPage = () => {
                 </button>
 
               </form>
+
+              {/* Demo admin credentials */}
+              <div className="mt-6 rounded-lg border border-dashed border-indigo-200 bg-indigo-50/50 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wider text-indigo-600">
+                  Demo admin login
+                </p>
+                <p className="mt-1.5 text-xs leading-5 text-slate-600">
+                  Username:{" "}
+                  <span className="font-semibold text-slate-800">
+                    schoolAdmin@gmail.com
+                  </span>
+                  <br />
+                  Password:{" "}
+                  <span className="font-semibold text-slate-800">
+                    admin123@
+                  </span>
+                </p>
+              </div>
 
 
               <p className="mt-8 text-center text-sm text-slate-500">

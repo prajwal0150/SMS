@@ -24,3 +24,8 @@ export const selectAuthLoading = (
 export const selectAuthError = (
   state: RootState
 ) => state.auth.error;
+
+
+export const selectAuthIsSessionChecked = (
+  state: RootState
+) => state.auth.isSessionChecked;
