@@ -4,6 +4,8 @@ import { GraduationCap, Search } from "lucide-react";
 import Card from "../../dashboard/components/Card";
 import DataState from "./DataState";
 
+import { useSchoolLookups } from "../../School/hooks/useSchoolLookups";
+
 import type {
   Student,
   StudentPromotion,
@@ -58,11 +60,17 @@ const StudentPromotionPanel = ({
   const [query, setQuery] = useState("");
   const [selected, setSelected] =
     useState<Set<string>>(new Set());
-  const [className, setClassName] = useState("");
+  const [classId, setClassId] = useState("");
   const [section, setSection] = useState("");
   const [academicYear, setAcademicYear] =
     useState(currentAcademicYear());
   const [notes, setNotes] = useState("");
+
+  const { classes, classSections, loading: classesLoading } =
+    useSchoolLookups(classId);
+
+  const selectedClassName =
+    classes.find((item) => item.id === classId)?.class_name ?? "";
 
 
   const filteredStudents = useMemo(() => {
@@ -124,8 +132,8 @@ const StudentPromotionPanel = ({
 
     const success = await onPromote({
       student_ids: Array.from(selected),
-      class_name: className.trim(),
-      section: section.trim() || undefined,
+      class_name: selectedClassName,
+      section: section || undefined,
       academic_year: academicYear.trim(),
       notes: notes.trim() || undefined,
     });
@@ -149,29 +157,45 @@ const StudentPromotionPanel = ({
             <label htmlFor="pClass" className="mb-2 block text-sm font-semibold text-slate-700">
               Target class
             </label>
-            <input
+            <select
               id="pClass"
-              type="text"
-              value={className}
-              onChange={(event) => setClassName(event.target.value)}
+              value={classId}
+              onChange={(event) => {
+                setClassId(event.target.value);
+                setSection("");
+              }}
               required
-              placeholder="e.g. Class 8-A"
               className={inputClass}
-            />
+            >
+              <option value="">
+                {classesLoading ? "Loading classes..." : "Select class"}
+              </option>
+              {classes.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.class_name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
             <label htmlFor="pSection" className="mb-2 block text-sm font-semibold text-slate-700">
               Section
             </label>
-            <input
+            <select
               id="pSection"
-              type="text"
               value={section}
               onChange={(event) => setSection(event.target.value)}
-              placeholder="e.g. A"
+              disabled={!classId}
               className={inputClass}
-            />
+            >
+              <option value="">Select section</option>
+              {classSections.map((item) => (
+                <option key={item.id} value={item.section_name}>
+                  {item.section_name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
@@ -290,7 +314,7 @@ const StudentPromotionPanel = ({
           <p className="text-sm text-slate-500">
             {selected.size === 0
               ? "Select at least one student to promote."
-              : `${selected.size} student(s) will be moved to ${className.trim() || "target class"}.`}
+              : `${selected.size} student(s) will be moved to ${selectedClassName || "target class"}.`}
           </p>
           <button
             type="submit"

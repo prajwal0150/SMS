@@ -31,13 +31,7 @@ export const adminNavGroups: AdminNavGroup[] = [
     id: "school",
     label: "School Management",
     icon: School,
-    children: [
-      { label: "School Profile", path: "/admin/school/profile" },
-      { label: "Academic Year", path: "/admin/school/academic-year" },
-      { label: "Classes", path: "/admin/school/classes" },
-      { label: "Sections", path: "/admin/school/sections" },
-      { label: "Subjects", path: "/admin/school/subjects" },
-    ],
+    children: [],
   },
   {
     id: "staff",
@@ -67,11 +61,7 @@ export const adminNavGroups: AdminNavGroup[] = [
     id: "attendance",
     label: "Attendance",
     icon: ClipboardCheck,
-    children: [
-      { label: "Student Attendance", path: "/admin/attendance/students" },
-      { label: "Teacher Attendance", path: "/admin/attendance/teachers" },
-      { label: "Attendance Reports", path: "/admin/attendance/reports" },
-    ],
+    children: [],
   },
   {
     id: "assignments",

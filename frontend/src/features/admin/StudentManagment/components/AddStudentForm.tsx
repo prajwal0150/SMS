@@ -3,6 +3,8 @@ import { UserPlus } from "lucide-react";
 
 import Card from "../../dashboard/components/Card";
 
+import { useSchoolLookups } from "../../School/hooks/useSchoolLookups";
+
 import type {
   NewStudentInput,
   StudentGender,
@@ -70,12 +72,18 @@ const AddStudentForm = ({
 
   const [rollNumber, setRollNumber] = useState("");
   const [admissionNumber, setAdmissionNumber] = useState("");
-  const [className, setClassName] = useState("");
+  const [classId, setClassId] = useState("");
   const [section, setSection] = useState("");
   const [admissionYear, setAdmissionYear] =
     useState<number>(currentYear);
   const [admissionDate, setAdmissionDate] =
     useState(todayString());
+
+  const { classes, classSections, loading } =
+    useSchoolLookups(classId);
+
+  const selectedClassName =
+    classes.find((item) => item.id === classId)?.class_name ?? "";
 
   const [fatherName, setFatherName] = useState("");
   const [motherName, setMotherName] = useState("");
@@ -100,7 +108,7 @@ const AddStudentForm = ({
     setPostalCode("");
     setRollNumber("");
     setAdmissionNumber("");
-    setClassName("");
+    setClassId("");
     setSection("");
     setAdmissionYear(currentYear);
     setAdmissionDate(todayString());
@@ -132,8 +140,8 @@ const AddStudentForm = ({
       postal_code: postalCode.trim() || undefined,
       roll_number: rollNumber.trim() || undefined,
       admission_number: admissionNumber.trim(),
-      class_name: className.trim(),
-      section: section.trim() || undefined,
+      class_name: selectedClassName,
+      section: section || undefined,
       admission_year: admissionYear,
       admission_date: admissionDate,
       father_name: fatherName.trim() || undefined,
@@ -366,29 +374,45 @@ const AddStudentForm = ({
             <label htmlFor="sClass" className="mb-2 block text-sm font-semibold text-slate-700">
               Class
             </label>
-            <input
+            <select
               id="sClass"
-              type="text"
-              value={className}
-              onChange={(event) => setClassName(event.target.value)}
+              value={classId}
+              onChange={(event) => {
+                setClassId(event.target.value);
+                setSection("");
+              }}
               required
-              placeholder="e.g. Class 6-A"
               className={inputClass}
-            />
+            >
+              <option value="">
+                {loading ? "Loading classes..." : "Select class"}
+              </option>
+              {classes.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.class_name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
             <label htmlFor="sSection" className="mb-2 block text-sm font-semibold text-slate-700">
               Section
             </label>
-            <input
+            <select
               id="sSection"
-              type="text"
               value={section}
               onChange={(event) => setSection(event.target.value)}
-              placeholder="e.g. A"
+              disabled={!classId}
               className={inputClass}
-            />
+            >
+              <option value="">Select section</option>
+              {classSections.map((item) => (
+                <option key={item.id} value={item.section_name}>
+                  {item.section_name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>

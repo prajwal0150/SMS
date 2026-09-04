@@ -4,6 +4,8 @@ import { ClipboardList } from "lucide-react";
 import Card from "../../dashboard/components/Card";
 import DataState from "./DataState";
 
+import { useSchoolLookups } from "../../School/hooks/useSchoolLookups";
+
 import type {
   Teacher,
   TeacherAssignment,
@@ -46,9 +48,15 @@ const TeacherAssignmentsPanel = ({
 }: TeacherAssignmentsPanelProps) => {
 
   const [teacherId, setTeacherId] = useState("");
-  const [className, setClassName] = useState("");
+  const [classId, setClassId] = useState("");
   const [section, setSection] = useState("");
   const [subject, setSubject] = useState("");
+
+  const { classes, classSections, classSubjectNames, loading: schoolLoading } =
+    useSchoolLookups(classId);
+
+  const selectedClassName =
+    classes.find((item) => item.id === classId)?.class_name ?? "";
 
 
   const handleSubmit = async (
@@ -62,13 +70,13 @@ const TeacherAssignmentsPanel = ({
 
     const success = await onCreate({
       teacher_id: teacherId,
-      class_name: className.trim(),
-      section: section.trim() || undefined,
-      subject: subject.trim(),
+      class_name: selectedClassName,
+      section: section || undefined,
+      subject,
     });
 
     if (success) {
-      setClassName("");
+      setClassId("");
       setSection("");
       setSubject("");
     }
@@ -118,17 +126,26 @@ const TeacherAssignmentsPanel = ({
           >
             Class
           </label>
-          <input
+          <select
             id="aClass"
-            type="text"
-            value={className}
-            onChange={(event) =>
-              setClassName(event.target.value)
-            }
+            value={classId}
+            onChange={(event) => {
+              setClassId(event.target.value);
+              setSection("");
+              setSubject("");
+            }}
             required
-            placeholder="e.g. Class 8-A"
             className={inputClass}
-          />
+          >
+            <option value="">
+              {schoolLoading ? "Loading classes..." : "Select class"}
+            </option>
+            {classes.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.class_name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>
@@ -138,16 +155,22 @@ const TeacherAssignmentsPanel = ({
           >
             Section
           </label>
-          <input
+          <select
             id="aSection"
-            type="text"
             value={section}
             onChange={(event) =>
               setSection(event.target.value)
             }
-            placeholder="e.g. A"
+            disabled={!classId}
             className={inputClass}
-          />
+          >
+            <option value="">Select section</option>
+            {classSections.map((item) => (
+              <option key={item.id} value={item.section_name}>
+                {item.section_name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>
@@ -157,17 +180,32 @@ const TeacherAssignmentsPanel = ({
           >
             Subject
           </label>
-          <input
+          <select
             id="aSubject"
-            type="text"
             value={subject}
             onChange={(event) =>
               setSubject(event.target.value)
             }
             required
-            placeholder="e.g. Mathematics"
+            disabled={!classId}
             className={inputClass}
-          />
+          >
+            <option value="">
+              {classId
+                ? "Select subject"
+                : "Select a class first"}
+            </option>
+            {classSubjectNames.map((name) => (
+              <option key={name} value={name}>
+                {name}
+              </option>
+            ))}
+            {classId && classSubjectNames.length === 0 && (
+              <option value="" disabled>
+                No subjects assigned to this class yet
+              </option>
+            )}
+          </select>
         </div>
 
         <div className="flex items-end">

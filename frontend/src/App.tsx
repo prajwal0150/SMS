@@ -22,6 +22,8 @@ import StaffManagementPage from "./features/admin/Stfaff Managment/page/StaffMan
 import StudentManagementPage from "./features/admin/StudentManagment/page/StudentManagementPage";
 import CommunicationManagementPage from "./features/admin/Comunication/page/CommunicationManagementPage";
 import AcademicManagementPage from "./features/admin/Academic/page/AcademicManagementPage";
+import SchoolManagementPage from "./features/admin/School/page/SchoolManagementPage";
+import AttendanceManagementPage from "./features/admin/Attendance/page/AttendanceManagementPage";
 
 import LoadingScreen from "./components/LoadingScreen";
 
@@ -139,6 +141,32 @@ const App = () => {
           element={<AdminDashboardPage />}
         />
         <Route
+          path="school"
+          element={<SchoolManagementPage />}
+        />
+        {/* Legacy school sub-links now redirect to the school page */}
+        <Route
+          path="school/profile"
+          element={<Navigate to="/admin/school" replace />}
+        />
+        <Route
+          path="school/academic-year"
+          element={<Navigate to="/admin/school" replace />}
+        />
+        <Route
+          path="school/classes"
+          element={<Navigate to="/admin/school" replace />}
+        />
+        <Route
+          path="school/sections"
+          element={<Navigate to="/admin/school" replace />}
+        />
+        <Route
+          path="school/subjects"
+          element={<Navigate to="/admin/school" replace />}
+        />
+
+        <Route
           path="staff"
           element={<StaffManagementPage />}
         />
@@ -157,7 +185,7 @@ const App = () => {
         />
         <Route
           path="staff/attendance"
-          element={<Navigate to="/admin/staff" replace />}
+          element={<Navigate to="/admin/attendance" replace />}
         />
 
         {/* Student Management */}
@@ -232,6 +260,16 @@ const App = () => {
         <Route
           path="academic/calendar"
           element={<Navigate to="/admin/academic" replace />}
+        />
+
+        {/* Attendance */}
+        <Route
+          path="attendance"
+          element={<AttendanceManagementPage />}
+        />
+        <Route
+          path="attendance/reports"
+          element={<Navigate to="/admin/attendance" replace />}
         />
 
         <Route

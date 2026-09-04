@@ -3,6 +3,8 @@ import { UserPlus } from "lucide-react";
 
 import Card from "../../dashboard/components/Card";
 
+import { useSchoolLookups } from "../../School/hooks/useSchoolLookups";
+
 import type {
   CreateTeacherInput,
   TeacherStatus,
@@ -37,6 +39,8 @@ const AddTeacherForm = ({
   const [status, setStatus] =
     useState<TeacherStatus>("active");
   const [password, setPassword] = useState("");
+
+  const { subjects } = useSchoolLookups();
 
 
   const handleSubmit = async (
@@ -159,17 +163,22 @@ const AddTeacherForm = ({
             >
               Subject
             </label>
-            <input
+            <select
               id="tSubject"
-              type="text"
               value={subject}
               onChange={(event) =>
                 setSubject(event.target.value)
               }
               required
-              placeholder="e.g. Mathematics"
               className={inputClass}
-            />
+            >
+              <option value="">Select subject</option>
+              {subjects.map((item) => (
+                <option key={item.id} value={item.subject_name}>
+                  {item.subject_name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>

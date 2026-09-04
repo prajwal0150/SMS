@@ -3,6 +3,8 @@ import { ClipboardList } from "lucide-react";
 
 import Card from "../../dashboard/components/Card";
 
+import { useSchoolLookups } from "../../School/hooks/useSchoolLookups";
+
 import type {
   ExamStatus,
   ExamType,
@@ -25,12 +27,18 @@ interface AddExamFormProps {
 const AddExamForm = ({ saving, onSave }: AddExamFormProps) => {
   const [name, setName] = useState("");
   const [examType, setExamType] = useState<ExamType>("Term Exam");
-  const [className, setClassName] = useState("");
+  const [classId, setClassId] = useState("");
   const [section, setSection] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [status, setStatus] = useState<ExamStatus>("upcoming");
   const [description, setDescription] = useState("");
+
+  const { classes, classSections, loading } =
+    useSchoolLookups(classId);
+
+  const selectedClassName =
+    classes.find((item) => item.id === classId)?.class_name ?? "";
 
   const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>
@@ -40,8 +48,8 @@ const AddExamForm = ({ saving, onSave }: AddExamFormProps) => {
     const success = await onSave({
       name: name.trim(),
       exam_type: examType,
-      class_name: className.trim(),
-      section: section.trim() || undefined,
+      class_name: selectedClassName,
+      section: section || undefined,
       start_date: startDate,
       end_date: endDate || undefined,
       status,
@@ -51,7 +59,7 @@ const AddExamForm = ({ saving, onSave }: AddExamFormProps) => {
     if (success) {
       setName("");
       setExamType("Term Exam");
-      setClassName("");
+      setClassId("");
       setSection("");
       setStartDate("");
       setEndDate("");
@@ -104,29 +112,45 @@ const AddExamForm = ({ saving, onSave }: AddExamFormProps) => {
             <label htmlFor="eClass" className="mb-2 block text-sm font-semibold text-slate-700">
               Class
             </label>
-            <input
+            <select
               id="eClass"
-              type="text"
-              value={className}
-              onChange={(event) => setClassName(event.target.value)}
+              value={classId}
+              onChange={(event) => {
+                setClassId(event.target.value);
+                setSection("");
+              }}
               required
-              placeholder="e.g. Class 10"
               className={inputClass}
-            />
+            >
+              <option value="">
+                {loading ? "Loading classes..." : "Select class"}
+              </option>
+              {classes.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.class_name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
             <label htmlFor="eSection" className="mb-2 block text-sm font-semibold text-slate-700">
-              Section (optional)
+              Section
             </label>
-            <input
+            <select
               id="eSection"
-              type="text"
               value={section}
               onChange={(event) => setSection(event.target.value)}
-              placeholder="e.g. A"
+              disabled={!classId}
               className={inputClass}
-            />
+            >
+              <option value="">All sections (optional)</option>
+              {classSections.map((item) => (
+                <option key={item.id} value={item.section_name}>
+                  {item.section_name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>

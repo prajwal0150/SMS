@@ -4,6 +4,7 @@ import { CalendarClock } from "lucide-react";
 import Card from "../../dashboard/components/Card";
 
 import { fetchTeachers } from "../../Stfaff Managment/services/staffManagmentServices";
+import { useSchoolLookups } from "../../School/hooks/useSchoolLookups";
 
 import type {
   DayOfWeek,
@@ -38,7 +39,7 @@ const AddTimetableForm = ({ saving, onSave }: AddTimetableFormProps) => {
   const [teachers, setTeachers] = useState<StaffTeacher[]>([]);
   const [teachersLoading, setTeachersLoading] = useState(true);
   const [teacherId, setTeacherId] = useState("");
-  const [className, setClassName] = useState("");
+  const [classId, setClassId] = useState("");
   const [section, setSection] = useState("");
   const [day, setDay] = useState<DayOfWeek>("Monday");
   const [periodNumber, setPeriodNumber] = useState(1);
@@ -46,6 +47,12 @@ const AddTimetableForm = ({ saving, onSave }: AddTimetableFormProps) => {
   const [endTime, setEndTime] = useState("");
   const [subject, setSubject] = useState("");
   const [room, setRoom] = useState("");
+
+  const { classes, classSections, classSubjectNames, loading } =
+    useSchoolLookups(classId);
+
+  const selectedClassName =
+    classes.find((item) => item.id === classId)?.class_name ?? "";
 
 
   // Load the real teacher list so the admin can pick
@@ -93,13 +100,13 @@ const AddTimetableForm = ({ saving, onSave }: AddTimetableFormProps) => {
     );
 
     const success = await onSave({
-      class_name: className.trim(),
-      section: section.trim() || undefined,
+      class_name: selectedClassName,
+      section: section || undefined,
       day_of_week: day,
       period_number: periodNumber,
       start_time: startTime,
       end_time: endTime,
-      subject: subject.trim(),
+      subject,
       teacher_id: teacherId,
       teacher_name: chosen
         ? `${chosen.first_name} ${chosen.last_name}`
@@ -121,29 +128,48 @@ const AddTimetableForm = ({ saving, onSave }: AddTimetableFormProps) => {
             <label htmlFor="tClass" className="mb-2 block text-sm font-semibold text-slate-700">
               Class
             </label>
-            <input
+            <select
               id="tClass"
-              type="text"
-              value={className}
-              onChange={(event) => setClassName(event.target.value)}
+              value={classId}
+              onChange={(event) => {
+                setClassId(event.target.value);
+                setSection("");
+                setSubject("");
+              }}
               required
-              placeholder="e.g. Class 10"
               className={inputClass}
-            />
+            >
+              <option value="">
+                {loading ? "Loading classes..." : "Select class"}
+              </option>
+              {classes.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.class_name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
             <label htmlFor="tSection" className="mb-2 block text-sm font-semibold text-slate-700">
-              Section (optional)
+              Section
             </label>
-            <input
+            <select
               id="tSection"
-              type="text"
               value={section}
-              onChange={(event) => setSection(event.target.value)}
-              placeholder="e.g. A"
+              onChange={(event) =>
+                setSection(event.target.value)
+              }
+              disabled={!classId}
               className={inputClass}
-            />
+            >
+              <option value="">Select section (optional)</option>
+              {classSections.map((item) => (
+                <option key={item.id} value={item.section_name}>
+                  {item.section_name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
@@ -211,15 +237,32 @@ const AddTimetableForm = ({ saving, onSave }: AddTimetableFormProps) => {
             <label htmlFor="tSubject" className="mb-2 block text-sm font-semibold text-slate-700">
               Subject
             </label>
-            <input
+            <select
               id="tSubject"
-              type="text"
               value={subject}
-              onChange={(event) => setSubject(event.target.value)}
+              onChange={(event) =>
+                setSubject(event.target.value)
+              }
               required
-              placeholder="e.g. Mathematics"
+              disabled={!classId}
               className={inputClass}
-            />
+            >
+              <option value="">
+                {classId
+                  ? "Select subject"
+                  : "Select a class first"}
+              </option>
+              {classSubjectNames.map((name) => (
+                <option key={name} value={name}>
+                  {name}
+                </option>
+              ))}
+              {classId && classSubjectNames.length === 0 && (
+                <option value="" disabled>
+                  No subjects assigned to this class yet
+                </option>
+              )}
+            </select>
           </div>
 
           <div>

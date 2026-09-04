@@ -1,30 +1,3 @@
-export interface TeacherClass {
-  id: string;
-  name: string;
-  subject: string;
-  students: number;
-  schedule: string;
-  periodsPerWeek: number;
-}
-
-export interface TimetableEntry {
-  id: string;
-  day: string;
-  period: string;
-  time: string;
-  subject: string;
-  className: string;
-}
-
-export interface AttendanceRecord {
-  id: string;
-  className: string;
-  date: string;
-  present: number;
-  absent: number;
-  status: "Completed" | "Pending";
-}
-
 export type AttendanceStatus = "Present" | "Absent";
 
 export interface StudentAttendance {
@@ -34,33 +7,75 @@ export interface StudentAttendance {
   status: AttendanceStatus;
 }
 
-export interface AssignmentItem {
+// A homework / classwork assignment created by the
+// teacher (from the `class_assignments` table).
+export type ClassAssignmentStatus = "Open" | "Grading" | "Closed";
+
+export interface ClassAssignmentItem {
   id: string;
+  teacher_id: string;
   title: string;
-  className: string;
+  description: string | null;
+  class_name: string;
+  section: string | null;
   subject: string;
-  dueDate: string;
-  status: "Open" | "Grading" | "Closed";
-  submissions: number;
+  due_date: string;
+  status: ClassAssignmentStatus;
+  created_at: string;
 }
 
-export interface ResultRow {
-  id: string;
-  student: string;
-  className: string;
+export interface NewClassAssignmentInput {
+  teacher_id: string;
+  title: string;
+  description?: string | null;
+  class_name: string;
+  section?: string | null;
   subject: string;
-  marks: number;
-  totalMarks: number;
-  grade: string;
+  due_date: string;
+  status?: ClassAssignmentStatus;
 }
 
-export interface NoticeItem {
+// One saved marks row for an exam
+// (from the `exam_results` table).
+export interface ExamResultRecord {
+  id: string;
+  student_id: string;
+  marks_obtained: number;
+  total_marks: number;
+  grade: string | null;
+}
+
+// A minimal exam shape used by the teacher
+// results filters (from the `exams` table).
+export interface TeacherExamOption {
+  id: string;
+  name: string;
+  exam_type: string;
+  class_name: string;
+  section: string | null;
+  start_date: string;
+  end_date: string | null;
+  status: string;
+}
+
+// Unified feed shown on the teacher Notices page —
+// combines everything the admin publishes on the
+// Communication page (notices, announcements
+// targeted at teachers, and events).
+export type TeacherFeedItem = {
+  kind: "Notice" | "Announcement" | "Event";
   id: string;
   title: string;
-  date: string;
-  category: "Academic" | "Event" | "Staff" | "General";
   body: string;
-}
+  date: string;
+  // Category (notices) or audience (announcements).
+  tag?: string;
+  priority?: string;
+  // Event-only details.
+  time?: string | null;
+  location?: string | null;
+  organizer?: string | null;
+};
 
 // The logged-in teacher's own record from the
 // `teachers` table (matched by email).
