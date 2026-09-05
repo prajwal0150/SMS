@@ -13,16 +13,10 @@ import {
 } from "lucide-react";
 
 
-export interface AdminNavChild {
-  label: string;
-  path: string;
-}
-
 export interface AdminNavGroup {
   id: string;
   label: string;
   icon: LucideIcon;
-  children: AdminNavChild[];
 }
 
 
@@ -31,76 +25,50 @@ export const adminNavGroups: AdminNavGroup[] = [
     id: "school",
     label: "School Management",
     icon: School,
-    children: [],
   },
   {
     id: "staff",
     label: "Staff Management",
     icon: Users,
-    children: [],
   },
   {
     id: "students",
     label: "Student Management",
     icon: GraduationCap,
-    children: [],
   },
   {
     id: "communication",
     label: "Communication",
     icon: Megaphone,
-    children: [],
   },
   {
     id: "academic",
     label: "Academic",
     icon: CalendarDays,
-    children: [],
   },
   {
     id: "attendance",
     label: "Attendance",
     icon: ClipboardCheck,
-    children: [],
   },
   {
     id: "assignments",
     label: "Assignments",
     icon: FileText,
-    children: [
-      { label: "All Assignments", path: "/admin/assignments/all" },
-      { label: "Assignment Reports", path: "/admin/assignments/reports" },
-    ],
   },
   {
     id: "results",
     label: "Results",
     icon: Award,
-    children: [
-      { label: "Exam Results", path: "/admin/results/exams" },
-      { label: "Mark Sheets", path: "/admin/results/mark-sheets" },
-      { label: "Result Reports", path: "/admin/results/reports" },
-    ],
   },
   {
     id: "resources",
     label: "Resources",
     icon: FolderOpen,
-    children: [
-      { label: "Study Materials", path: "/admin/resources/study-materials" },
-      { label: "Documents", path: "/admin/resources/documents" },
-      { label: "Downloads", path: "/admin/resources/downloads" },
-    ],
   },
   {
     id: "reports",
     label: "Reports",
     icon: BarChart3,
-    children: [
-      { label: "Student Reports", path: "/admin/reports/students" },
-      { label: "Teacher Reports", path: "/admin/reports/teachers" },
-      { label: "Attendance Reports", path: "/admin/reports/attendance" },
-      { label: "Academic Reports", path: "/admin/reports/academic" },
-    ],
   },
 ];

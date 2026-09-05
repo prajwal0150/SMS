@@ -53,22 +53,7 @@ const AdminPlaceholderPage = () => {
           </p>
         </div>
 
-        {group && (
-          <ul className="mt-2 flex flex-wrap justify-center gap-2">
-            {group.children.map((child) => (
-              <li key={child.path}>
                 <Link
-                  to={child.path}
-                  className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 transition-colors hover:border-indigo-300 hover:text-indigo-600"
-                >
-                  {child.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        <Link
           to="/admin/dashboard"
           className="mt-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-700"
         >

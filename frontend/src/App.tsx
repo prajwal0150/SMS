@@ -3,17 +3,16 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import LoginPage from "./features/auth/page/LoginPage";
-import DashboardPage from "./features/dashboard/page/DashboardPage";
 // import ForgotPasswordPage from "./modules/auth/page/ForgotPasswordPage";
 
 import TeacherLayout from "./layouts/TeacherLayout/TeacherLayout";
-import TeacherDashboardPage from "./features/teachers/page/TeacherDashboardPage";
-import TeacherClassesPage from "./features/teachers/page/TeacherClassesPage";
-import TeacherTimetablePage from "./features/teachers/page/TeacherTimetablePage";
-import TeacherAttendancePage from "./features/teachers/page/TeacherAttendancePage";
-import TeacherAssignmentsPage from "./features/teachers/page/TeacherAssignmentsPage";
-import TeacherResultsPage from "./features/teachers/page/TeacherResultsPage";
-import TeacherNoticesPage from "./features/teachers/page/TeacherNoticesPage";
+import TeacherDashboardPage from "./features/teachers/Dashboard/page/TeacherDashboardPage";
+import TeacherClassesPage from "./features/teachers/MyClasses/page/TeacherClassesPage";
+import TeacherTimetablePage from "./features/teachers/Timetable/page/TeacherTimetablePage";
+import TeacherAttendancePage from "./features/teachers/Attendance/page/TeacherAttendancePage";
+import TeacherAssignmentsPage from "./features/teachers/Assignment/page/TeacherAssignmentsPage";
+import TeacherResultsPage from "./features/teachers/Result/page/TeacherResultsPage";
+import TeacherNoticesPage from "./features/teachers/Notices/page/TeacherNoticesPage";
 
 import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 import AdminDashboardPage from "./features/admin/dashboard/page/AdminDashboardPage";
@@ -85,9 +84,9 @@ const App = () => {
         element={<Navigate to="/login" replace />}
       />
 
-      <Route
+            <Route
         path="/dashboard"
-        element={<DashboardPage />}
+        element={<Navigate to="/" replace />}
       />
 
       <Route

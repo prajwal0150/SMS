@@ -1,7 +1,5 @@
-import { useState } from "react";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
-  ChevronDown,
   GraduationCap,
   LayoutDashboard,
   LogOut,
@@ -12,21 +10,12 @@ import useAuth from "../../features/auth/hooks/useAuth";
 import { adminNavGroups } from "./navConfig";
 
 
-const isPathActive = (
-  pathname: string,
-  path: string
-): boolean =>
-  pathname === path ||
-  pathname.startsWith(`${path}/`);
-
-
 interface SidebarProps {
   onNavigate?: () => void;
 }
 
 const Sidebar = ({ onNavigate }: SidebarProps) => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   const { user, logout } = useAuth();
 
@@ -36,33 +25,6 @@ const Sidebar = ({ onNavigate }: SidebarProps) => {
   const email = user?.email ?? "";
 
   const initial = fullName.charAt(0).toUpperCase();
-
-
-  const [openGroups, setOpenGroups] = useState<
-    Record<string, boolean>
-  >(() => {
-    const initial: Record<string, boolean> = {};
-
-    adminNavGroups.forEach((group) => {
-      initial[group.id] = group.children.some(
-        (child) =>
-          isPathActive(
-            location.pathname,
-            child.path
-          )
-      );
-    });
-
-    return initial;
-  });
-
-
-  const toggleGroup = (id: string) => {
-    setOpenGroups((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
 
 
   const handleLogout = async () => {
@@ -107,73 +69,26 @@ const Sidebar = ({ onNavigate }: SidebarProps) => {
           Dashboard
         </NavLink>
 
-        {/* Groups */}
+        {/* Nav items - flat, no sub-labels */}
         {adminNavGroups.map((group) => {
           const Icon = group.icon;
 
-          // Groups without children render as a direct link.
-          if (group.children.length === 0) {
-            return (
-              <NavLink
-                key={group.id}
-                to={`/admin/${group.id}`}
-                onClick={onNavigate}
-                className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
-                    isActive
-                      ? "bg-indigo-600 text-white"
-                      : "text-slate-400 hover:bg-white/5 hover:text-white"
-                  }`
-                }
-              >
-                <Icon size={18} />
-                {group.label}
-              </NavLink>
-            );
-          }
-
-          const isOpen = !!openGroups[group.id];
-
           return (
-            <div key={group.id}>
-              <button
-                type="button"
-                onClick={() => toggleGroup(group.id)}
-                className="flex w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium text-slate-400 transition-colors hover:bg-white/5 hover:text-white"
-              >
-                <Icon size={18} className="shrink-0" />
-                <span className="flex-1 text-left">
-                  {group.label}
-                </span>
-                <ChevronDown
-                  size={15}
-                  className={`shrink-0 transition-transform duration-200 ${
-                    isOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-
-              {isOpen && (
-                <div className="ml-6 mt-1 space-y-1 border-l border-white/10 pl-3">
-                  {group.children.map((child) => (
-                    <NavLink
-                      key={child.path}
-                      to={child.path}
-                      onClick={onNavigate}
-                      className={({ isActive }) =>
-                        `block truncate rounded-lg px-3 py-2 text-sm transition-colors ${
-                          isActive
-                            ? "bg-indigo-600 text-white"
-                            : "text-slate-400 hover:bg-white/5 hover:text-white"
-                        }`
-                      }
-                    >
-                      {child.label}
-                    </NavLink>
-                  ))}
-                </div>
-              )}
-            </div>
+            <NavLink
+              key={group.id}
+              to={`/admin/${group.id}`}
+              onClick={onNavigate}
+              className={({ isActive }) =>
+                `flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
+                  isActive
+                    ? "bg-indigo-600 text-white"
+                    : "text-slate-400 hover:bg-white/5 hover:text-white"
+                }`
+              }
+            >
+              <Icon size={18} />
+              {group.label}
+            </NavLink>
           );
         })}
       </nav>
