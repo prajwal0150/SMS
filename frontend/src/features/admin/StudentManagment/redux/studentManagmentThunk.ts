@@ -12,7 +12,7 @@ import {
 } from "../services/studentManagmentServices";
 
 import type {
-  NewStudentInput,
+  CreateStudentInput,
   PromotionInput,
   NewDocumentInput,
 } from "../types/studentManagmentTypes";
@@ -47,7 +47,7 @@ export const createStudentThunk = createAsyncThunk(
   "studentManagement/createStudent",
 
   async (
-    input: NewStudentInput,
+    input: CreateStudentInput,
     { rejectWithValue }
   ) => {
     try {

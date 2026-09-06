@@ -133,7 +133,6 @@ const ResultsManagementPage = () => {
           onReviewPending={() => focusWorkflow("submitted")}
           onPublishedResults={() => focusWorkflow("reviewed")}
           onGenerateClassReport={scrollToClassReport}
-          onGenerateReport={() => setExportOpen(true)}
           onGradeConfiguration={() => setGradeOpen(true)}
           onExportAll={() => setExportOpen(true)}
         />

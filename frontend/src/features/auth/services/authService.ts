@@ -34,6 +34,35 @@ export const isAdminEmail = (
   ADMIN_EMAIL.toLowerCase();
 
 
+// ==============================
+// ROLE-BASED HOME PATH
+// ==============================
+
+interface UserLike {
+  email?: string | null;
+  user_metadata?: {
+    role?: string | null;
+  } | null;
+}
+
+// Where each account type lands after signing in:
+// admins -> admin panel, students -> student panel,
+// everything else -> teacher panel.
+export const getUserHomePath = (
+  user?: UserLike | null
+): string => {
+  if (isAdminEmail(user?.email)) {
+    return "/admin/dashboard";
+  }
+
+  if (user?.user_metadata?.role === "student") {
+    return "/student";
+  }
+
+  return "/teacher";
+};
+
+
 const createDemoAdminResult = (): {
   user: User;
   session: Session;

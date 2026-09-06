@@ -48,6 +48,7 @@ export interface Student {
   guardian_phone: string | null;
   photo_url: string | null;
   status: StudentStatus;
+  auth_user_id: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -61,7 +62,9 @@ export interface NewStudentInput {
   roll_number?: string;
   admission_number: string;
   class_name: string;
+  class_id?: string;
   section?: string;
+  section_id?: string;
   admission_year: number;
   admission_date?: string;
   gender?: StudentGender;
@@ -80,6 +83,12 @@ export interface NewStudentInput {
   photo_url?: string;
   status?: StudentStatus;
 }
+
+// Everything needed to create a student together with
+// their login account (Supabase auth user).
+export type CreateStudentInput = NewStudentInput & {
+  password: string;
+};
 
 export interface PromotionInput {
   student_ids: string[];

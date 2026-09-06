@@ -11,7 +11,6 @@ interface QuickActionsProps {
   onReviewPending: () => void;
   onPublishedResults: () => void;
   onGenerateClassReport: () => void;
-  onGenerateReport: () => void;
   onGradeConfiguration: () => void;
   onExportAll: () => void;
 }
@@ -27,7 +26,6 @@ const QuickActions = ({
   onReviewPending,
   onPublishedResults,
   onGenerateClassReport,
-  onGenerateReport,
   onGradeConfiguration,
   onExportAll,
 }: QuickActionsProps) => {

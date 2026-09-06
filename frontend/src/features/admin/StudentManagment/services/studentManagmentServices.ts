@@ -2,7 +2,7 @@ import { supabase } from "../../../../lib/supabase";
 
 import type {
   Student,
-  NewStudentInput,
+  CreateStudentInput,
   PromotionInput,
   StudentPromotion,
   StudentDocument,
@@ -31,12 +31,105 @@ export const fetchStudents =
 
 
 export const createStudent = async (
-  input: NewStudentInput
+  input: CreateStudentInput
 ): Promise<Student> => {
+  // A login account cannot be created without an email.
+  if (!input.email) {
+    throw new Error(
+      "Student email is required to create their login account."
+    );
+  }
+
+  // 1. Remember the admin's current session so it can be
+  // restored after the sign up below.
+  const { data: sessionData } =
+    await supabase.auth.getSession();
+
+  const adminSession =
+    sessionData?.session ?? null;
+
+  // 2. Create the student's real login account
+  // (Supabase auth user with email + password).
+  const { data: authData, error: authError } =
+    await supabase.auth.signUp({
+      email: input.email,
+      password: input.password,
+
+      options: {
+        data: {
+          full_name: [
+            input.first_name,
+            input.middle_name,
+            input.last_name,
+          ]
+            .filter(Boolean)
+            .join(" "),
+          role: "student",
+        },
+      },
+    });
+
+  if (authError) {
+    throw new Error(authError.message);
+  }
+
+  if (!authData.user) {
+    throw new Error(
+      "Student login account could not be created."
+    );
+  }
+
+  // 3. If sign up also signed the browser in as the new
+  // student (email auto-confirm enabled), restore the
+  // admin's session so the admin stays logged in.
+  if (authData.session) {
+    await supabase.auth.signOut();
+
+    if (adminSession) {
+      await supabase.auth.setSession({
+        access_token: adminSession.access_token,
+        refresh_token: adminSession.refresh_token,
+      });
+    }
+  }
+
+  // 4. Insert the student row linked to the auth user.
+  // The password is only used for the login account -
+  // it is never stored in the students table.
   const { data, error } =
     await supabase
       .from("students")
-      .insert(input)
+      .insert({
+        first_name: input.first_name,
+        middle_name: input.middle_name ?? null,
+        last_name: input.last_name,
+        email: input.email,
+        phone: input.phone ?? null,
+        roll_number: input.roll_number ?? null,
+        admission_number: input.admission_number,
+        class_name: input.class_name,
+        class_id: input.class_id ?? null,
+        section: input.section ?? null,
+        section_id: input.section_id ?? null,
+        admission_year: input.admission_year,
+        admission_date: input.admission_date ?? null,
+        gender: input.gender ?? null,
+        date_of_birth: input.date_of_birth ?? null,
+        blood_group: input.blood_group ?? null,
+        category: input.category ?? null,
+        rte: input.rte ?? false,
+        address: input.address ?? null,
+        city: input.city ?? null,
+        state: input.state ?? null,
+        postal_code: input.postal_code ?? null,
+        father_name: input.father_name ?? null,
+        mother_name: input.mother_name ?? null,
+        guardian_name: input.guardian_name ?? null,
+        guardian_phone: input.guardian_phone ?? null,
+        photo_url: input.photo_url ?? null,
+        status: input.status ?? "active",
+        auth_user_id: authData.user.id,
+      })
       .select()
       .single();
 

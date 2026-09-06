@@ -14,6 +14,11 @@ import TeacherAssignmentsPage from "./features/teachers/Assignment/page/TeacherA
 import TeacherResultsPage from "./features/teachers/Result/page/TeacherResultsPage";
 import TeacherNoticesPage from "./features/teachers/Notices/page/TeacherNoticesPage";
 
+import StudentLayout from "./layouts/StudentLayout/StudentLayout";
+import StudentDashboardPage from "./features/students/Dashboard/page/StudentDashboardPage";
+import StudentProfilePage from "./features/students/MyProfile/page/StudentProfilePage";
+import StudentPlaceholderPage from "./features/students/Dashboard/page/StudentPlaceholderPage";
+
 import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 import AdminDashboardPage from "./features/admin/dashboard/page/AdminDashboardPage";
 import AdminPlaceholderPage from "./features/admin/dashboard/page/AdminPlaceholderPage";
@@ -23,26 +28,25 @@ import CommunicationManagementPage from "./features/admin/Comunication/page/Comm
 import AcademicManagementPage from "./features/admin/Academic/page/AcademicManagementPage";
 import SchoolManagementPage from "./features/admin/School/page/SchoolManagementPage";
 import AttendanceManagementPage from "./features/admin/Attendance/page/AttendanceManagementPage";
+import ResultsManagementPage from "./features/admin/Results/page/ResultsManagementPage";
 
 import LoadingScreen from "./components/LoadingScreen";
 
 import { getCurrentUserThunk } from "./features/auth/redux/authThunk";
 import { selectIsAuthenticated, selectAuthIsSessionChecked, selectUser } from "./features/auth/redux/authSelector";
-import { isAdminEmail } from "./features/auth/services/authService";
+import { getUserHomePath } from "./features/auth/services/authService";
 import type { AppDispatch, RootState } from "./redux/store";
 
 
 const getHomePath = (
   isAuthenticated: boolean,
-  email?: string | null
+  user?: { email?: string | null; user_metadata?: { role?: string | null } | null } | null
 ): string => {
   if (!isAuthenticated) {
     return "/login";
   }
 
-  return isAdminEmail(email)
-    ? "/admin/dashboard"
-    : "/teacher";
+  return getUserHomePath(user);
 };
 
 
@@ -124,6 +128,45 @@ const App = () => {
         <Route
           path="notices"
           element={<TeacherNoticesPage />}
+        />
+      </Route>
+
+      <Route
+        path="/student"
+        element={<StudentLayout />}
+      >
+        <Route
+          index
+          element={<Navigate to="/student/dashboard" replace />}
+        />
+        <Route
+          path="dashboard"
+          element={<StudentDashboardPage />}
+        />
+        {/* Upcoming student modules */}
+        <Route
+          path="profile"
+          element={<StudentProfilePage />}
+        />
+        <Route
+          path="attendance"
+          element={<StudentPlaceholderPage />}
+        />
+        <Route
+          path="timetable"
+          element={<StudentPlaceholderPage />}
+        />
+        <Route
+          path="results"
+          element={<StudentPlaceholderPage />}
+        />
+        <Route
+          path="assignments"
+          element={<StudentPlaceholderPage />}
+        />
+        <Route
+          path="notices"
+          element={<StudentPlaceholderPage />}
         />
       </Route>
 
@@ -271,6 +314,12 @@ const App = () => {
           element={<Navigate to="/admin/attendance" replace />}
         />
 
+        {/* Results */}
+        <Route
+          path="results"
+          element={<ResultsManagementPage />}
+        />
+
         <Route
           path="*"
           element={<AdminPlaceholderPage />}
@@ -288,7 +337,7 @@ const App = () => {
         path="/"
         element={
           <Navigate
-            to={getHomePath(isAuthenticated, user?.email)}
+            to={getHomePath(isAuthenticated, user)}
             replace
           />
         }
@@ -300,7 +349,7 @@ const App = () => {
         path="*"
         element={
           <Navigate
-            to={getHomePath(isAuthenticated, user?.email)}
+            to={getHomePath(isAuthenticated, user)}
             replace
           />
         }

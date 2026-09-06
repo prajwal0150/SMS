@@ -27,7 +27,7 @@ import {
 } from "../redux/studentManagmentThunk";
 
 import type {
-  NewStudentInput,
+  CreateStudentInput,
   PromotionInput,
   NewDocumentInput,
 } from "../types/studentManagmentTypes";
@@ -100,13 +100,15 @@ export const useStudentManagement = () => {
 
 
   const handleCreateStudent = useCallback(
-    async (input: NewStudentInput) => {
+    async (input: CreateStudentInput) => {
       try {
         await dispatch(
           createStudentThunk(input)
         ).unwrap();
 
-        toast.success("Student added successfully.");
+        toast.success(
+          "Student added. Login created for their email."
+        );
 
         return true;
       } catch (err) {

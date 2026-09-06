@@ -13,15 +13,7 @@ import toast from "react-hot-toast";
 
 import useAuth from "../hooks/useAuth";
 import { loginThunk } from "../redux/authThunk";
-import { isAdminEmail } from "../services/authService";
-
-
-const getPostLoginPath = (
-  email?: string | null
-): string =>
-  isAdminEmail(email)
-    ? "/admin/dashboard"
-    : "/teacher";
+import { getUserHomePath } from "../services/authService";
 
 
 const LoginPage = () => {
@@ -51,10 +43,10 @@ const LoginPage = () => {
   useEffect(() => {
 
     if (isAuthenticated) {
-      navigate(getPostLoginPath(user?.email));
+      navigate(getUserHomePath(user));
     }
 
-  }, [isAuthenticated, user?.email, navigate]);
+  }, [isAuthenticated, user, navigate]);
 
 
   useEffect(() => {
@@ -85,9 +77,7 @@ const LoginPage = () => {
       toast.success("Welcome back!");
 
       navigate(
-        getPostLoginPath(
-          result.payload?.user?.email
-        )
+        getUserHomePath(result.payload?.user)
       );
 
     }

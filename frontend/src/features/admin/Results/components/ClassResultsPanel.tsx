@@ -2,7 +2,6 @@
 import {
   BarChart3,
   Download,
-  Loader2,
   RefreshCw,
   TrendingDown,
   TrendingUp,

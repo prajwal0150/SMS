@@ -6,7 +6,7 @@ import Card from "../../dashboard/components/Card";
 import { useSchoolLookups } from "../../School/hooks/useSchoolLookups";
 
 import type {
-  NewStudentInput,
+  CreateStudentInput,
   StudentGender,
   StudentStatus,
   BloodGroup,
@@ -19,7 +19,7 @@ const inputClass =
 
 interface AddStudentFormProps {
   saving: boolean;
-  onSave: (input: NewStudentInput) => Promise<boolean>;
+  onSave: (input: CreateStudentInput) => Promise<boolean>;
 }
 
 const todayString = (): string =>
@@ -91,6 +91,7 @@ const AddStudentForm = ({
   const [guardianPhone, setGuardianPhone] = useState("");
   const [status, setStatus] =
     useState<StudentStatus>("active");
+  const [password, setPassword] = useState("");
 
 
   const reset = () => {
@@ -117,6 +118,7 @@ const AddStudentForm = ({
     setGuardianName("");
     setGuardianPhone("");
     setStatus("active");
+    setPassword("");
   };
 
 
@@ -124,6 +126,10 @@ const AddStudentForm = ({
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
+
+    const selectedSectionId = classSections.find(
+      (item) => item.section_name === section
+    )?.id;
 
     const success = await onSave({
       first_name: firstName.trim(),
@@ -141,7 +147,9 @@ const AddStudentForm = ({
       roll_number: rollNumber.trim() || undefined,
       admission_number: admissionNumber.trim(),
       class_name: selectedClassName,
+      class_id: classId || undefined,
       section: section || undefined,
+      section_id: selectedSectionId,
       admission_year: admissionYear,
       admission_date: admissionDate,
       father_name: fatherName.trim() || undefined,
@@ -149,6 +157,7 @@ const AddStudentForm = ({
       guardian_name: guardianName.trim() || undefined,
       guardian_phone: guardianPhone.trim() || undefined,
       status,
+      password,
     });
 
     if (success) {
@@ -269,8 +278,14 @@ const AddStudentForm = ({
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
+              required
+              autoComplete="off"
+              placeholder="student@example.com"
               className={inputClass}
             />
+            <p className="mt-1.5 text-xs text-slate-500">
+              Used as the login email for the student panel.
+            </p>
           </div>
 
           <div>
@@ -336,6 +351,30 @@ const AddStudentForm = ({
               onChange={(event) => setAddress(event.target.value)}
               className={inputClass}
             />
+          </div>
+        </div>
+
+        {/* Login details */}
+        <SectionLabel>Login Details</SectionLabel>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label htmlFor="sPassword" className="mb-2 block text-sm font-semibold text-slate-700">
+              Login Password
+            </label>
+            <input
+              id="sPassword"
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+              minLength={6}
+              autoComplete="new-password"
+              placeholder="At least 6 characters"
+              className={inputClass}
+            />
+            <p className="mt-1.5 text-xs text-slate-500">
+              The student signs in to the student panel with their email and this password.
+            </p>
           </div>
         </div>
 
