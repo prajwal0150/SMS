@@ -1,8 +1,13 @@
-﻿import { useEffect, useMemo, useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { motion } from "motion/react";
+import type { Variants } from "motion/react";
+import {
+  Filter,
+  Loader2,
+  Plus,
+  Trash2,
+} from "lucide-react";
 import toast from "react-hot-toast";
-
-import PageHeader from "../../components/PageHeader";
 
 import { useTeacherProfile } from "../../hooks/useTeacherProfile";
 import { useSchoolLookups } from "../../../admin/School/hooks/useSchoolLookups";
@@ -13,21 +18,49 @@ import {
   fetchClassAssignments,
   updateClassAssignmentStatus,
 } from "../services/assignmentService";
-import type { ClassAssignmentRow } from "../types/assignmentTypes";
+import type {
+  ClassAssignmentItem,
+  ClassAssignmentRow,
+} from "../types/assignmentTypes";
 
-import type { ClassAssignmentItem } from "../types/assignmentTypes";
+/* Staggered fade-up entrance for the whole page. */
+const pageVariants: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.08 } },
+};
+
+const sectionVariants: Variants = {
+  hidden: { opacity: 0, y: 14 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.35, ease: "easeOut" },
+  },
+};
 
 const STATUS_STYLES: Record<
   ClassAssignmentItem["status"],
   string
 > = {
-  Open: "bg-green-50 text-green-600",
+  Open: "bg-emerald-50 text-emerald-600",
   Grading: "bg-amber-50 text-amber-600",
   Closed: "bg-slate-100 text-slate-500",
 };
 
+const STATUS_DOTS: Record<
+  ClassAssignmentItem["status"],
+  string
+> = {
+  Open: "bg-emerald-500",
+  Grading: "bg-amber-500",
+  Closed: "bg-slate-300",
+};
+
 const inputClasses =
-  "w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400";
+  "h-9 w-full rounded-lg border border-slate-200 bg-white px-3 text-xs text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400";
+
+const labelClass =
+  "mb-1 block text-[11px] font-semibold text-slate-500";
 
 const TeacherAssignmentsPage = () => {
   const { profile } = useTeacherProfile();
@@ -49,8 +82,7 @@ const TeacherAssignmentsPage = () => {
 
   // Create form fields.
   const [title, setTitle] = useState("");
-  const [description, setDescription] =
-    useState("");
+  const [description, setDescription] = useState("");
   const [className, setClassName] = useState("");
   const [section, setSection] = useState("");
   const [subject, setSubject] = useState("");
@@ -70,10 +102,7 @@ const TeacherAssignmentsPage = () => {
       setLoading(true);
 
       try {
-        const data =
-          await fetchClassAssignments(
-            profile.id
-          );
+        const data = await fetchClassAssignments(profile.id);
 
         if (!cancelled) {
           setRows(data);
@@ -110,13 +139,9 @@ const TeacherAssignmentsPage = () => {
   );
 
   const formSubjects = classSubjects
-    .filter(
-      (entry) => entry.class_id === formClassId
-    )
+    .filter((entry) => entry.class_id === formClassId)
     .map((entry) => entry.subjects?.subject_name)
-    .filter(
-      (name): name is string => Boolean(name)
-    )
+    .filter((name): name is string => Boolean(name))
     .sort();
 
   const filterClassId = classes.find(
@@ -133,9 +158,7 @@ const TeacherAssignmentsPage = () => {
         new Set(
           rows
             .filter(
-              (row) =>
-                !fClass ||
-                row.class_name === fClass
+              (row) => !fClass || row.class_name === fClass
             )
             .map((row) => row.subject)
         )
@@ -147,14 +170,10 @@ const TeacherAssignmentsPage = () => {
     () =>
       rows.filter(
         (row) =>
-          (!fClass ||
-            row.class_name === fClass) &&
-          (!fSection ||
-            row.section === fSection) &&
-          (!fSubject ||
-            row.subject === fSubject) &&
-          (!fDueDate ||
-            row.due_date === fDueDate)
+          (!fClass || row.class_name === fClass) &&
+          (!fSection || row.section === fSection) &&
+          (!fSubject || row.subject === fSubject) &&
+          (!fDueDate || row.due_date === fDueDate)
       ),
     [rows, fClass, fSection, fSubject, fDueDate]
   );
@@ -177,12 +196,7 @@ const TeacherAssignmentsPage = () => {
       return;
     }
 
-    if (
-      !title.trim() ||
-      !className ||
-      !subject ||
-      !dueDate
-    ) {
+    if (!title.trim() || !className || !subject || !dueDate) {
       toast.error(
         "Title, class, subject and due date are required."
       );
@@ -192,23 +206,22 @@ const TeacherAssignmentsPage = () => {
     setSaving(true);
 
     try {
-      const created =
-        await createClassAssignment({
-          teacher_id: profile.id,
-          title: title.trim(),
-          description: description.trim() || null,
-          class_name: className,
-          section: section || null,
-          subject,
-          due_date: dueDate,
-        });
+      const created = await createClassAssignment({
+        teacher_id: profile.id,
+        title: title.trim(),
+        description: description.trim() || null,
+        class_name: className,
+        section: section || null,
+        subject,
+        due_date: dueDate,
+      });
 
       setRows((prev) => [created, ...prev]);
 
       toast.success(
         `Assignment published for ${className}${
           section ? ` - ${section}` : ""
-        } Â· ${subject}`
+        } (${subject})`
       );
 
       setTitle("");
@@ -234,16 +247,11 @@ const TeacherAssignmentsPage = () => {
     status: ClassAssignmentRow["status"]
   ) => {
     try {
-      await updateClassAssignmentStatus(
-        id,
-        status
-      );
+      await updateClassAssignmentStatus(id, status);
 
       setRows((prev) =>
         prev.map((row) =>
-          row.id === id
-            ? { ...row, status }
-            : row
+          row.id === id ? { ...row, status } : row
         )
       );
 
@@ -277,67 +285,87 @@ const TeacherAssignmentsPage = () => {
     }
   };
 
+
   return (
-    <>
-      <PageHeader
-        title="Assignments"
-        description="Create homework and track it class by class."
-      />
+    <motion.div
+      variants={pageVariants}
+      initial="hidden"
+      animate="show"
+      className="space-y-4"
+    >
+      {/* Compact header with status chips */}
+      <motion.div
+        variants={sectionVariants}
+        className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between"
+      >
+        <div className="min-w-0">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-indigo-600">
+            Teacher Portal
+          </p>
+          <h1 className="mt-0.5 truncate text-lg font-bold tracking-tight text-slate-900 sm:text-xl">
+            Assignments
+          </h1>
+          <p className="mt-0.5 text-xs text-slate-500">
+            Create homework and track it class by class.
+          </p>
+        </div>
 
-      <div className="flex flex-wrap items-center gap-3">
-        {[
-          { label: "Open", value: openCount },
-          { label: "Grading", value: gradingCount },
-          { label: "Closed", value: closedCount },
-        ].map((stat) => (
-          <div
-            key={stat.label}
-            className="rounded-lg border border-slate-200 bg-white px-4 py-2"
+        <div className="flex flex-wrap items-center gap-2">
+          {[
+            { label: "Open", value: openCount },
+            { label: "Grading", value: gradingCount },
+            { label: "Closed", value: closedCount },
+          ].map((stat) => (
+            <span
+              key={stat.label}
+              className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-slate-500"
+            >
+              <span
+                className={`h-1.5 w-1.5 rounded-full ${
+                  STATUS_DOTS[
+                    stat.label as ClassAssignmentItem["status"]
+                  ]
+                }`}
+              />
+              {stat.label} {stat.value}
+            </span>
+          ))}
+
+          <button
+            type="button"
+            onClick={() => setShowForm((prev) => !prev)}
+            className="flex h-9 items-center gap-1.5 rounded-lg bg-indigo-600 px-3.5 text-xs font-semibold text-white transition-colors hover:bg-indigo-700"
           >
-            <p className="text-xs font-medium text-slate-400">
-              {stat.label}
-            </p>
-            <p className="text-lg font-bold text-slate-900">
-              {stat.value}
-            </p>
-          </div>
-        ))}
+            <Plus size={14} />
+            New Assignment
+          </button>
+        </div>
+      </motion.div>
 
-        <button
-          type="button"
-          onClick={() => setShowForm((prev) => !prev)}
-          className="ml-auto inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700"
-        >
-          <Plus size={16} />
-          New Assignment
-        </button>
-      </div>
 
+      {/* Create form */}
       {showForm && (
-        <section className="mt-4 rounded-lg border border-slate-200 bg-white p-6">
-          <h3 className="text-base font-bold text-slate-900">
+        <motion.section
+          variants={sectionVariants}
+          className="rounded-lg border border-slate-200 bg-white p-4"
+        >
+          <h2 className="text-sm font-bold text-slate-900">
             Create assignment
-          </h3>
+          </h2>
 
-          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             <label className="block">
-              <span className="mb-1 block text-xs font-semibold text-slate-500">
-                Title *
-              </span>
+              <span className={labelClass}>Title *</span>
               <input
                 value={title}
-                onChange={(event) =>
-                  setTitle(event.target.value)
-                }
+                onChange={(event) => setTitle(event.target.value)}
                 placeholder="e.g. Algebra worksheet 3"
                 className={inputClasses}
               />
             </label>
 
             <label className="block">
-              <span className="mb-1 block text-xs font-semibold text-slate-500">
-                Class *
-              </span>
+              <span className={labelClass}>Class *</span>
               <select
                 value={className}
                 onChange={(event) => {
@@ -349,10 +377,7 @@ const TeacherAssignmentsPage = () => {
               >
                 <option value="">Select class</option>
                 {classes.map((item) => (
-                  <option
-                    key={item.id}
-                    value={item.class_name}
-                  >
+                  <option key={item.id} value={item.class_name}>
                     {item.class_name}
                   </option>
                 ))}
@@ -360,14 +385,10 @@ const TeacherAssignmentsPage = () => {
             </label>
 
             <label className="block">
-              <span className="mb-1 block text-xs font-semibold text-slate-500">
-                Section
-              </span>
+              <span className={labelClass}>Section</span>
               <select
                 value={section}
-                onChange={(event) =>
-                  setSection(event.target.value)
-                }
+                onChange={(event) => setSection(event.target.value)}
                 disabled={!className}
                 className={inputClasses}
               >
@@ -377,10 +398,7 @@ const TeacherAssignmentsPage = () => {
                     : "Choose class first"}
                 </option>
                 {formSections.map((item) => (
-                  <option
-                    key={item.id}
-                    value={item.section_name}
-                  >
+                  <option key={item.id} value={item.section_name}>
                     {item.section_name}
                   </option>
                 ))}
@@ -388,14 +406,10 @@ const TeacherAssignmentsPage = () => {
             </label>
 
             <label className="block">
-              <span className="mb-1 block text-xs font-semibold text-slate-500">
-                Subject *
-              </span>
+              <span className={labelClass}>Subject *</span>
               <select
                 value={subject}
-                onChange={(event) =>
-                  setSubject(event.target.value)
-                }
+                onChange={(event) => setSubject(event.target.value)}
                 disabled={!className}
                 className={inputClasses}
               >
@@ -415,40 +429,34 @@ const TeacherAssignmentsPage = () => {
             </label>
 
             <label className="block">
-              <span className="mb-1 block text-xs font-semibold text-slate-500">
-                Due date *
-              </span>
+              <span className={labelClass}>Due date *</span>
               <input
                 type="date"
                 value={dueDate}
-                onChange={(event) =>
-                  setDueDate(event.target.value)
-                }
+                onChange={(event) => setDueDate(event.target.value)}
                 className={inputClasses}
               />
             </label>
 
             <label className="block sm:col-span-2 lg:col-span-3">
-              <span className="mb-1 block text-xs font-semibold text-slate-500">
-                Description
-              </span>
+              <span className={labelClass}>Description</span>
               <textarea
                 value={description}
                 onChange={(event) =>
                   setDescription(event.target.value)
                 }
-                rows={3}
+                rows={2}
                 placeholder="Instructions for students..."
-                className={inputClasses}
+                className={`${inputClasses} h-auto py-2`}
               />
             </label>
           </div>
 
-          <div className="mt-4 flex justify-end gap-3">
+          <div className="mt-3 flex justify-end gap-2">
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+              className="h-9 rounded-lg border border-slate-200 px-3.5 text-xs font-semibold text-slate-600 transition-colors hover:bg-slate-50"
             >
               Cancel
             </button>
@@ -456,20 +464,27 @@ const TeacherAssignmentsPage = () => {
               type="button"
               onClick={handleCreate}
               disabled={saving}
-              className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-50"
+              className="flex h-9 items-center gap-1.5 rounded-lg bg-indigo-600 px-3.5 text-xs font-semibold text-white transition-colors hover:bg-indigo-700 disabled:opacity-60"
             >
-              {saving
-                ? "Publishing..."
-                : "Publish assignment"}
+              {saving && (
+                <Loader2 size={13} className="animate-spin" />
+              )}
+              {saving ? "Publishing..." : "Publish assignment"}
             </button>
           </div>
-        </section>
+        </motion.section>
       )}
 
-      <section className="mt-6 rounded-lg border border-slate-200 bg-white p-6">
-        <h3 className="text-sm font-bold uppercase tracking-wide text-slate-400">
+
+      {/* Filters */}
+      <motion.section
+        variants={sectionVariants}
+        className="rounded-lg border border-slate-200 bg-white p-4"
+      >
+        <h2 className="flex items-center gap-2 text-sm font-bold text-slate-900">
+          <Filter size={14} className="text-indigo-600" />
           Filters
-        </h3>
+        </h2>
 
         <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <select
@@ -495,18 +510,13 @@ const TeacherAssignmentsPage = () => {
 
           <select
             value={fSection}
-            onChange={(event) =>
-              setFSection(event.target.value)
-            }
+            onChange={(event) => setFSection(event.target.value)}
             disabled={!fClass}
             className={inputClasses}
           >
             <option value="">All sections</option>
             {filterSections.map((item) => (
-              <option
-                key={item.id}
-                value={item.section_name}
-              >
+              <option key={item.id} value={item.section_name}>
                 {item.section_name}
               </option>
             ))}
@@ -514,9 +524,7 @@ const TeacherAssignmentsPage = () => {
 
           <select
             value={fSubject}
-            onChange={(event) =>
-              setFSubject(event.target.value)
-            }
+            onChange={(event) => setFSubject(event.target.value)}
             className={inputClasses}
           >
             <option value="">All subjects</option>
@@ -530,101 +538,86 @@ const TeacherAssignmentsPage = () => {
           <input
             type="date"
             value={fDueDate}
-            onChange={(event) =>
-              setFDueDate(event.target.value)
-            }
+            onChange={(event) => setFDueDate(event.target.value)}
             className={inputClasses}
           />
         </div>
+      </motion.section>
 
-        <div className="mt-5 space-y-3">
-          {loading ? (
-            <p className="py-8 text-center text-sm text-slate-400">
-              Loading assignments...
-            </p>
-          ) : filtered.length === 0 ? (
-            <p className="py-8 text-center text-sm text-slate-400">
-              No assignments match the selected
-              filters.
-            </p>
-          ) : (
-            filtered.map((row) => (
-              <article
-                key={row.id}
-                className="rounded-lg border border-slate-200 p-4 transition hover:border-indigo-200"
-              >
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h4 className="font-semibold text-slate-900">
-                        {row.title}
-                      </h4>
-                      <span
-                        className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ${STATUS_STYLES[row.status]}`}
-                      >
-                        {row.status}
-                      </span>
-                    </div>
-                    <p className="mt-1 text-xs font-medium text-slate-500">
-                      {row.class_name}
-                      {row.section
-                        ? ` - ${row.section}`
-                        : ""}{" "}
-                      Â· {row.subject} Â· Due{" "}
-                      {row.due_date}
+      {/* Assignment list */}
+      <div className="space-y-2.5">
+        {loading ? (
+          <p className="rounded-lg border border-slate-200 bg-white py-8 text-center text-xs text-slate-400">
+            Loading assignments...
+          </p>
+        ) : filtered.length === 0 ? (
+          <p className="rounded-lg border border-dashed border-slate-200 bg-white py-8 text-center text-xs text-slate-400">
+            No assignments match the selected filters.
+          </p>
+        ) : (
+          filtered.map((row) => (
+            <article
+              key={row.id}
+              className="animate-fade-up rounded-lg border border-slate-200 bg-white p-3.5 transition-colors hover:border-indigo-200"
+            >
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="truncate text-sm font-semibold text-slate-900">
+                      {row.title}
+                    </h3>
+                    <span
+                      className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold ${STATUS_STYLES[row.status]}`}
+                    >
+                      {row.status}
+                    </span>
+                  </div>
+                  <p className="mt-1 truncate text-[11px] font-medium text-slate-400">
+                    {row.class_name}
+                    {row.section ? ` - ${row.section}` : ""} -{" "}
+                    {row.subject} - Due {row.due_date}
+                  </p>
+                  {row.description && (
+                    <p className="mt-1.5 text-xs leading-5 text-slate-500">
+                      {row.description}
                     </p>
-                    {row.description && (
-                      <p className="mt-2 text-sm leading-6 text-slate-500">
-                        {row.description}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <select
-                      value={row.status}
-                      onChange={(event) =>
-                        handleStatus(
-                          row.id,
-                          event.target
-                            .value as ClassAssignmentRow["status"]
-                        )
-                      }
-                      className="rounded-md border border-slate-300 px-2 py-1.5 text-xs font-semibold text-slate-600"
-                    >
-                      <option value="Open">
-                        Open
-                      </option>
-                      <option value="Grading">
-                        Grading
-                      </option>
-                      <option value="Closed">
-                        Closed
-                      </option>
-                    </select>
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleDelete(row.id)
-                      }
-                      className="rounded-md border border-red-200 p-1.5 text-red-500 transition hover:bg-red-50"
-                      aria-label="Delete assignment"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
+                  )}
                 </div>
-              </article>
-            ))
-          )}
-        </div>
-      </section>
-    </>
+
+                <div className="flex shrink-0 items-center gap-1.5">
+                  <select
+                    value={row.status}
+                    onChange={(event) =>
+                      handleStatus(
+                        row.id,
+                        event.target
+                          .value as ClassAssignmentRow["status"]
+                      )
+                    }
+                    className="h-7 rounded-lg border border-slate-200 bg-white px-1.5 text-[11px] font-semibold text-slate-600 outline-none transition focus:border-indigo-500"
+                  >
+                    <option value="Open">Open</option>
+                    <option value="Grading">Grading</option>
+                    <option value="Closed">Closed</option>
+                  </select>
+
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(row.id)}
+                    className="rounded-lg border border-red-200 p-1.5 text-red-500 transition-colors hover:bg-red-50"
+                    aria-label="Delete assignment"
+                  >
+                    <Trash2 size={13} />
+                  </button>
+                </div>
+              </div>
+            </article>
+          ))
+        )}
+      </div>
+    </motion.div>
   );
 };
 
 export default TeacherAssignmentsPage;
-
-
 

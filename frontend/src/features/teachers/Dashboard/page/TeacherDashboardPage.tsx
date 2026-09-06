@@ -38,21 +38,6 @@ const sectionVariants: Variants = {
   },
 };
 
-const statGridVariants: Variants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.06 } },
-};
-
-const statCardVariants: Variants = {
-  hidden: { opacity: 0, y: 12, scale: 0.97 },
-  show: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { duration: 0.3, ease: "easeOut" },
-  },
-};
-
 const TeacherDashboardPage = () => {
   const {
     profile,
@@ -256,16 +241,11 @@ const TeacherDashboardPage = () => {
       </motion.div>
 
       {/* Compact stat cards */}
-      <motion.div
-        variants={statGridVariants}
-        className="grid grid-cols-2 gap-3 xl:grid-cols-4"
-      >
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
         {stats.map((stat) => (
-          <motion.div
+          <div
             key={stat.label}
-            variants={statCardVariants}
-            whileHover={{ y: -2 }}
-            className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white p-3.5"
+            className="animate-fade-up flex items-center gap-3 rounded-lg border border-slate-200 bg-white p-3.5 transition-colors hover:-translate-y-0.5"
           >
             <span
               className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${stat.accent}`}
@@ -280,9 +260,9 @@ const TeacherDashboardPage = () => {
                 {stat.label}
               </p>
             </div>
-          </motion.div>
+          </div>
         ))}
-      </motion.div>
+      </div>
 
 
       {/* Compact panels */}
