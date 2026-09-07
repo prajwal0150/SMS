@@ -111,24 +111,24 @@ const AcademicManagementPage = ({
       />
 
       {/* Live stats from Supabase */}
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map(({ label, value, icon: Icon, tint }, index) => (
           <div
             key={label}
-            className="flex animate-fade-up items-center gap-4 rounded-lg border border-slate-200 bg-white p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#166534]/30"
+            className="flex animate-fade-up items-center gap-3 rounded-lg border border-slate-200 bg-white p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-200"
             style={{ animationDelay: `${index * 70}ms` }}
           >
             <div
-              className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-lg ${tint}`}
+              className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${tint}`}
             >
-              <Icon size={22} />
+              <Icon size={18} />
             </div>
 
             <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-slate-500">
+              <p className="truncate text-xs font-medium text-slate-500">
                 {label}
               </p>
-              <p className="text-2xl font-bold text-slate-900">
+              <p className="text-base font-bold text-slate-900">
                 {value}
               </p>
             </div>
@@ -153,7 +153,7 @@ const AcademicManagementPage = ({
         </div>
       )}
 
-      <div className="mt-6 space-y-6">
+      <div className="mt-4 space-y-4">
         {view === "overview" && (
           <>
             <ExamsTable

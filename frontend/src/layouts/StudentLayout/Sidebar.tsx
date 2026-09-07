@@ -8,7 +8,6 @@ import {
   LayoutDashboard,
   LogOut,
   Megaphone,
-  User,
 } from "lucide-react";
 
 import useAuth from "../../features/auth/hooks/useAuth";
@@ -16,7 +15,6 @@ import useAuth from "../../features/auth/hooks/useAuth";
 
 const NAV_ITEMS = [
   { label: "Dashboard", path: "/student/dashboard", icon: LayoutDashboard },
-  { label: "My Profile", path: "/student/profile", icon: User },
   { label: "Attendance", path: "/student/attendance", icon: ClipboardCheck },
   { label: "Timetable", path: "/student/timetable", icon: CalendarDays },
   { label: "Assignments", path: "/student/assignments", icon: FileText },

@@ -18,6 +18,8 @@ import StudentLayout from "./layouts/StudentLayout/StudentLayout";
 import StudentDashboardPage from "./features/students/Dashboard/page/StudentDashboardPage";
 import StudentProfilePage from "./features/students/MyProfile/page/StudentProfilePage";
 import StudentPlaceholderPage from "./features/students/Dashboard/page/StudentPlaceholderPage";
+import StudentTimetablePage from "./features/students/Timetable/page/StudentTimetablePage";
+import StudentAssignmentsPage from "./features/students/Assignments/page/StudentAssignmentsPage";
 
 import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 import AdminDashboardPage from "./features/admin/dashboard/page/AdminDashboardPage";
@@ -154,7 +156,7 @@ const App = () => {
         />
         <Route
           path="timetable"
-          element={<StudentPlaceholderPage />}
+          element={<StudentTimetablePage />}
         />
         <Route
           path="results"
@@ -162,7 +164,7 @@ const App = () => {
         />
         <Route
           path="assignments"
-          element={<StudentPlaceholderPage />}
+          element={<StudentAssignmentsPage />}
         />
         <Route
           path="notices"

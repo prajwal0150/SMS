@@ -87,12 +87,12 @@ const AdminDashboardPage = () => {
   }).format(calendarMonth);
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <section className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-600">School overview</p>
-          <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900">Welcome back, {fullName}</h1>
-          <p className="mt-1 text-sm text-slate-500">Here is what is happening across your school today.</p>
+          <h1 className="mt-1 text-xl font-bold tracking-tight text-slate-900">Welcome back, {fullName}</h1>
+          <p className="mt-1 text-xs text-slate-500">Here is what is happening across your school today.</p>
         </div>
         <div className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-right shadow-sm">
           <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Academic year</p>
@@ -109,12 +109,12 @@ const AdminDashboardPage = () => {
         <StatCard label="Published Notices" value={formatNumber(statistics.published_notices)} icon={Megaphone} accent="bg-cyan-600/10 text-cyan-600" />
       </div>
 
-      <div className="grid gap-5 xl:grid-cols-[1.05fr_1.45fr_1.05fr]">
+      <div className="grid gap-4 xl:grid-cols-[1.05fr_1.45fr_1.05fr]">
         <Card title="Student attendance" subtitle="Current month">
-          <div className="flex flex-col items-center gap-6 sm:flex-row sm:justify-center">
-            <div className="relative h-36 w-36 shrink-0 rounded-full" style={{ background: attendanceStyle }}>
-              <div className="absolute inset-5 flex flex-col items-center justify-center rounded-full bg-white text-center">
-                <strong className="text-2xl text-slate-900">{Number(todayAttendance.attendance_percentage ?? 0).toFixed(1)}%</strong>
+          <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+            <div className="relative h-28 w-28 shrink-0 rounded-full" style={{ background: attendanceStyle }}>
+              <div className="absolute inset-4 flex flex-col items-center justify-center rounded-full bg-white text-center">
+                <strong className="text-lg text-slate-900">{Number(todayAttendance.attendance_percentage ?? 0).toFixed(1)}%</strong>
                 <span className="text-[10px] text-slate-500">today</span>
               </div>
             </div>
@@ -181,7 +181,7 @@ const AdminDashboardPage = () => {
       </div>
 
       <section>
-        <div className="mb-3 flex items-center justify-between"><h2 className="text-base font-bold text-slate-900">Portal modules</h2><span className="text-xs text-slate-400">{adminNavGroups.length} sections</span></div>
+        <div className="mb-2 flex items-center justify-between"><h2 className="text-sm font-bold text-slate-900">Portal modules</h2><span className="text-xs text-slate-400">{adminNavGroups.length} sections</span></div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">{adminNavGroups.slice(0, 10).map((group) => { const Icon = group.icon; return <Link key={group.id} to={`/admin/${group.id}`} className="group flex items-center gap-3 rounded-lg border border-slate-200 bg-white p-3 transition hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-sm"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-50 text-slate-500 group-hover:bg-indigo-50 group-hover:text-indigo-600"><Icon size={17} /></span><span className="min-w-0 flex-1 truncate text-xs font-semibold text-slate-700">{group.label}</span><ArrowRight size={14} className="text-slate-300 group-hover:text-indigo-500" /></Link>; })}</div>
       </section>
     </div>

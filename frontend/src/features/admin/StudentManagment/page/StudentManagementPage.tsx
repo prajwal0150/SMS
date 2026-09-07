@@ -112,24 +112,24 @@ const StudentManagementPage = ({
       />
 
       {/* Live stats from Supabase */}
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map(({ label, value, icon: Icon, tint }, index) => (
           <div
             key={label}
-            className="flex animate-fade-up items-center gap-4 rounded-lg border border-slate-200 bg-white p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#166534]/30"
+            className="flex animate-fade-up items-center gap-3 rounded-lg border border-slate-200 bg-white p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-200"
             style={{ animationDelay: `${index * 70}ms` }}
           >
             <div
-              className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-lg ${tint}`}
+              className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${tint}`}
             >
-              <Icon size={22} />
+              <Icon size={18} />
             </div>
 
             <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-slate-500">
+              <p className="truncate text-xs font-medium text-slate-500">
                 {label}
               </p>
-              <p className="text-2xl font-bold text-slate-900">
+              <p className="text-base font-bold text-slate-900">
                 {value}
               </p>
             </div>
@@ -138,15 +138,15 @@ const StudentManagementPage = ({
       </div>
 
       {view !== "students" && (
-        <div className="mt-6 flex animate-fade-up items-center justify-between rounded-lg border border-slate-200 bg-white px-4 py-3">
-          <p className="text-sm font-semibold text-slate-900">
+        <div className="mt-4 flex animate-fade-up items-center justify-between rounded-lg border border-slate-200 bg-white px-4 py-2">
+          <p className="text-xs font-semibold text-slate-900">
             {VIEW_LABELS[view]}
           </p>
 
           <button
             type="button"
             onClick={() => setView("students")}
-            className="flex items-center gap-1.5 rounded-lg text-sm font-semibold text-[#166534] transition-colors hover:text-[#14532D]"
+            className="flex items-center gap-1.5 rounded-lg text-xs font-semibold text-[#166534] transition-colors hover:text-[#14532D]"
           >
             <ArrowLeft size={15} />
             Back to All Students
@@ -154,7 +154,7 @@ const StudentManagementPage = ({
         </div>
       )}
 
-      <div className="mt-6">
+      <div className="mt-4">
         {view === "students" && (
           <StudentsTable
             students={students}

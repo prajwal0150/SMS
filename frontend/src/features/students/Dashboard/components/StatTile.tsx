@@ -15,17 +15,17 @@ const StatTile = ({
   icon: Icon,
   iconClassName = "bg-indigo-500 text-white",
 }: StatTileProps) => (
-  <div className="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-5">
+  <div className="flex animate-fade-up items-center gap-3 rounded-lg border border-slate-200 bg-white p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-200">
     <div
-      className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${iconClassName}`}
+      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${iconClassName}`}
     >
-      <Icon size={22} />
+      <Icon size={18} />
     </div>
     <div className="min-w-0">
       <p className="truncate text-xs font-medium text-slate-400">
         {label}
       </p>
-      <p className="truncate text-lg font-bold leading-tight text-slate-900">
+      <p className="truncate text-base font-bold leading-tight text-slate-900">
         {value}
       </p>
       {sub && (

@@ -98,7 +98,7 @@ const AttendanceManagementPage = () => {
       />
 
       {/* Student / Staff tabs */}
-      <div className="mb-6 inline-flex items-center gap-1 rounded-lg bg-slate-100 p-1">
+      <div className="mb-4 inline-flex items-center gap-1 rounded-lg bg-slate-100 p-1">
         {TABS.map(({ key, label, icon: Icon }) => (
           <button
             key={key}
@@ -116,7 +116,7 @@ const AttendanceManagementPage = () => {
         ))}
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-4">
         <AttendanceStats tab={tab} stats={stats} />
 
         <AttendanceFilters

@@ -43,14 +43,14 @@ const DonutChart = ({
 
   return (
     <div
-      className="relative h-40 w-40 shrink-0 rounded-full"
+      className="relative h-32 w-32 shrink-0 rounded-full"
       style={{ background: gradient }}
       role="img"
       aria-label={`${centerTop} ${centerMain} ${centerBottom}`}
     >
-      <div className="absolute inset-[15px] flex flex-col items-center justify-center rounded-full bg-white text-center">
+      <div className="absolute inset-[12px] flex flex-col items-center justify-center rounded-full bg-white text-center">
         <span className="text-xs text-slate-400">{centerTop}</span>
-        <span className="text-xl font-bold leading-tight text-slate-900">
+        <span className="text-lg font-bold leading-tight text-slate-900">
           {centerMain}
         </span>
         <span className="text-xs text-slate-400">{centerBottom}</span>

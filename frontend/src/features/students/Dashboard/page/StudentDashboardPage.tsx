@@ -280,19 +280,18 @@ const StudentDashboardPage = () => {
 
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Greeting + stat tiles + profile card */}
-      <div className="grid gap-6 xl:grid-cols-3">
-        <div className="space-y-6 xl:col-span-2">
+      <div className="grid gap-4 xl:grid-cols-3">
+        <div className="space-y-4 xl:col-span-2">
           <div>
-            <p className="text-sm font-semibold text-teal-700">
-              {getGreeting()},
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-indigo-600">
+              Student Portal
             </p>
-            <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900 lg:text-[28px]">
-              {profile.student_name}{" "}
-              <span aria-hidden="true">👋</span>
+            <h1 className="mt-0.5 text-lg font-bold tracking-tight text-slate-900">
+              {getGreeting()}, {profile.student_name}
             </h1>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-0.5 text-xs text-slate-500">
               Keep learning, keep growing!
             </p>
           </div>
@@ -300,7 +299,7 @@ const StudentDashboardPage = () => {
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <StatTile
               label="Class"
-              value={classValue}
+              value={classLabel}
               sub={
                 profile.section_name
                   ? `Section ${profile.section_name}`
@@ -337,40 +336,41 @@ const StudentDashboardPage = () => {
           </div>
         </div>
 
-        <section className="rounded-xl border border-slate-200 bg-white p-6">
-          <div className="flex items-center gap-4">
+        {/* Profile card */}
+        <section className="rounded-lg border border-slate-200 bg-white p-4">
+          <div className="flex items-center gap-3">
             {profile.photo_url ? (
               <img
                 src={profile.photo_url}
                 alt={profile.student_name}
-                className="h-16 w-16 shrink-0 rounded-full border-2 border-indigo-100 object-cover"
+                className="h-12 w-12 shrink-0 rounded-full border-2 border-indigo-100 object-cover"
               />
             ) : (
-              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xl font-bold text-indigo-600">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-base font-bold text-indigo-600">
                 {profile.student_name.charAt(0).toUpperCase()}
               </div>
             )}
             <div className="min-w-0">
-              <h2 className="truncate text-lg font-bold text-slate-900">
+              <h2 className="truncate text-sm font-bold text-slate-900">
                 {profile.student_name}
               </h2>
-              <p className="truncate text-sm text-slate-500">
-                Class {classValue}
+              <p className="truncate text-xs text-slate-500">
+                {classValue}
               </p>
-              <span className="mt-1 inline-flex rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold capitalize text-emerald-600">
+              <span className="mt-1 inline-flex rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold capitalize text-emerald-600">
                 {profile.status || "active"}
               </span>
             </div>
           </div>
 
-          <div className="mt-5 space-y-2.5 border-t border-slate-100 pt-4">
-            <p className="flex items-center justify-between text-sm">
+          <div className="mt-3 space-y-2 border-t border-slate-100 pt-3">
+            <p className="flex items-center justify-between text-xs">
               <span className="text-slate-400">Admission No.</span>
               <span className="font-semibold text-slate-700">
                 {profile.admission_number}
               </span>
             </p>
-            <p className="flex items-center justify-between text-sm">
+            <p className="flex items-center justify-between text-xs">
               <span className="text-slate-400">Roll No.</span>
               <span className="font-semibold text-slate-700">
                 {profile.roll_number ?? "-"}
@@ -381,12 +381,12 @@ const StudentDashboardPage = () => {
       </div>
 
       {/* Attendance donut + weekly trend + today's timetable */}
-      <div className="grid gap-6 xl:grid-cols-3">
+      <div className="grid gap-4 xl:grid-cols-3">
         <DashboardCard
           title="Today's Attendance"
           subtitle={formatFullDate(todayAttendance.attendance_date)}
         >
-          <div className="flex flex-col items-center gap-6 sm:flex-row">
+          <div className="flex flex-col items-center gap-4 sm:flex-row">
             <DonutChart
               segments={donutSegments}
               centerTop="Present"
@@ -473,19 +473,21 @@ const StudentDashboardPage = () => {
         </DashboardCard>
       </div>
 
-      {/* Events + notices + results */}
-      <div className="grid gap-6 xl:grid-cols-3">
-        <DashboardCard title="Upcoming Events">
+      {/* Notices + events + results */}
+      <div className="grid gap-4 xl:grid-cols-3">
+        <DashboardCard
+          title="Upcoming Events"
+          action={<ViewAllLink to="/student/notices" />}
+        >
           {upcomingEvents.length ? (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {upcomingEvents.slice(0, 4).map((event, index) => {
-                const EventIcon =
-                  EVENT_ICONS[index % EVENT_ICONS.length];
+                const EventIcon = EVENT_ICONS[index % EVENT_ICONS.length];
 
                 return (
                   <div key={event.id} className="flex items-center gap-3">
-                    <div className="w-12 shrink-0 rounded-lg border border-slate-200 py-1.5 text-center">
-                      <p className="text-sm font-bold leading-none text-slate-800">
+                    <div className="flex flex-col items-center text-slate-400">
+                      <p className="text-xs font-bold leading-none">
                         {formatDayMonth(event.date).split(" ")[0]}
                       </p>
                       <p className="mt-0.5 text-[10px] font-semibold uppercase leading-none text-rose-500">
@@ -522,7 +524,7 @@ const StudentDashboardPage = () => {
           action={<ViewAllLink to="/student/notices" />}
         >
           {notices.length ? (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {notices.slice(0, 4).map((notice) => {
                 const { Icon, chip } = noticeVisual(notice.priority);
 
@@ -565,7 +567,7 @@ const StudentDashboardPage = () => {
           action={<ViewAllLink to="/student/results" />}
         >
           {recentResults.length ? (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {recentResults.slice(0, 4).map((result, index) => {
                 const passed =
                   Number(result.marks_obtained) >=
@@ -613,7 +615,7 @@ const StudentDashboardPage = () => {
       </div>
 
       {/* Assignments + motivation */}
-      <div className="grid gap-6 xl:grid-cols-3">
+      <div className="grid gap-4 xl:grid-cols-3">
         <DashboardCard
           title="Recent Assignments"
           action={<ViewAllLink to="/student/assignments" />}
@@ -670,15 +672,15 @@ const StudentDashboardPage = () => {
           )}
         </DashboardCard>
 
-        <section className="flex flex-col justify-center rounded-xl border border-indigo-100 bg-gradient-to-br from-indigo-50 via-white to-emerald-50 p-6">
-          <div className="flex items-start gap-4">
+        <section className="flex flex-col justify-center rounded-lg border border-indigo-100 bg-gradient-to-br from-indigo-50 via-white to-emerald-50 p-4">
+          <div className="flex items-start gap-3">
             <BookStack />
             <div>
-              <p className="text-lg font-bold leading-snug text-slate-900">
+              <p className="text-sm font-bold leading-snug text-slate-900">
                 Your future is created by what you do today.
               </p>
-              <div className="my-3 h-0.5 w-10 rounded-full bg-indigo-300" />
-              <p className="text-sm font-medium text-slate-500">
+              <div className="my-2 h-0.5 w-10 rounded-full bg-indigo-300" />
+              <p className="text-xs font-medium text-slate-500">
                 Keep going!
               </p>
             </div>

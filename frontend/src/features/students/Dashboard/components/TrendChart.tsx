@@ -8,8 +8,8 @@ interface TrendChartProps {
 }
 
 const WIDTH = 340;
-const HEIGHT = 170;
-const PADDING = { top: 18, right: 10, bottom: 24, left: 30 };
+const HEIGHT = 140;
+const PADDING = { top: 14, right: 10, bottom: 20, left: 30 };
 
 const TrendChart = ({ points }: TrendChartProps) => {
   const innerWidth = WIDTH - PADDING.left - PADDING.right;

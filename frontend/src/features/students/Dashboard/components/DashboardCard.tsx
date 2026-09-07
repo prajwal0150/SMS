@@ -16,13 +16,13 @@ const DashboardCard = ({
   className,
 }: DashboardCardProps) => (
   <section
-    className={`flex flex-col rounded-xl border border-slate-200 bg-white ${
+    className={`flex flex-col rounded-lg border border-slate-200 bg-white ${
       className ?? ""
     }`}
   >
-    <header className="flex items-center justify-between gap-3 border-b border-slate-100 px-5 py-4">
+    <header className="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-3">
       <div className="min-w-0">
-        <h2 className="truncate text-[15px] font-bold text-slate-900">
+        <h2 className="truncate text-sm font-bold text-slate-900">
           {title}
         </h2>
         {subtitle && (
@@ -31,7 +31,7 @@ const DashboardCard = ({
       </div>
       {action}
     </header>
-    <div className="flex-1 p-5">{children}</div>
+    <div className="flex-1 p-4">{children}</div>
   </section>
 );
 

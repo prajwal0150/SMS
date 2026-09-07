@@ -19,10 +19,10 @@ const Card = ({
     className={`rounded-lg border border-slate-200 bg-white ${className ?? ""}`}
   >
     {(title || action) && (
-      <header className="flex items-center justify-between gap-4 border-b border-slate-100 px-6 py-4">
+      <header className="flex items-center justify-between gap-4 border-b border-slate-100 px-4 py-3">
         <div>
           {title && (
-            <h2 className="text-base font-semibold text-slate-900">
+            <h2 className="text-sm font-semibold text-slate-900">
               {title}
             </h2>
           )}
@@ -35,7 +35,7 @@ const Card = ({
         {action}
       </header>
     )}
-    <div className="p-6">{children}</div>
+    <div className="p-4">{children}</div>
   </section>
 );
 
