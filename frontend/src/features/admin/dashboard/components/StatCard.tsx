@@ -1,5 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 
+import CountUp from "../../../../components/CountUp";
+
 interface StatCardProps {
   label: string;
   value: string | number;
@@ -24,7 +26,7 @@ const StatCard = ({
         {label}
       </p>
       <p className="text-base font-bold text-slate-900">
-        {value}
+        {typeof value === "number" ? <CountUp value={value} /> : value}
       </p>
     </div>
   </div>

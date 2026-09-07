@@ -10,6 +10,7 @@ import {
 
 import { useTeacherProfile } from "../../hooks/useTeacherProfile";
 
+import CountUp from "../../../../components/CountUp";
 import { fetchStudentCountFor } from "../services/dashboardService";
 import { fetchClassAssignments } from "../../Assignment/services/assignmentService";
 
@@ -254,7 +255,11 @@ const TeacherDashboardPage = () => {
             </span>
             <div className="min-w-0">
               <p className="truncate text-lg font-bold leading-tight text-slate-900">
-                {stat.value}
+                {typeof stat.value === "number" ? (
+                  <CountUp value={stat.value} />
+                ) : (
+                  stat.value
+                )}
               </p>
               <p className="truncate text-[11px] font-medium text-slate-400">
                 {stat.label}
