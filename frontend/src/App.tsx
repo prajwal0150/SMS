@@ -21,11 +21,17 @@ import StudentPlaceholderPage from "./features/students/Dashboard/page/StudentPl
 import StudentTimetablePage from "./features/students/Timetable/page/StudentTimetablePage";
 import StudentAssignmentsPage from "./features/students/Assignments/page/StudentAssignmentsPage";
 
+import ParentLayout from "./layouts/ParentLayout/ParentLayout";
+import ParentDashboardPage from "./features/parents/page/ParentDashboardPage";
+import ParentChildrenPage from "./features/parents/page/ParentChildrenPage";
+import ParentChildDetailPage from "./features/parents/page/ParentChildDetailPage";
+
 import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 import AdminDashboardPage from "./features/admin/dashboard/page/AdminDashboardPage";
 import AdminPlaceholderPage from "./features/admin/dashboard/page/AdminPlaceholderPage";
 import StaffManagementPage from "./features/admin/Stfaff Managment/page/StaffManagementPage";
 import StudentManagementPage from "./features/admin/StudentManagment/page/StudentManagementPage";
+import FeesManagementPage from "./features/admin/Fees/page/FeesManagementPage";
 import CommunicationManagementPage from "./features/admin/Comunication/page/CommunicationManagementPage";
 import AcademicManagementPage from "./features/admin/Academic/page/AcademicManagementPage";
 import SchoolManagementPage from "./features/admin/School/page/SchoolManagementPage";
@@ -172,6 +178,29 @@ const App = () => {
         />
       </Route>
 
+      {/* Parent Portal */}
+      <Route
+        path="/parent"
+        element={<ParentLayout />}
+      >
+        <Route
+          index
+          element={<ParentDashboardPage />}
+        />
+        <Route
+          path="children"
+          element={<ParentChildrenPage />}
+        />
+        <Route
+          path="children/:studentId"
+          element={<ParentChildDetailPage />}
+        />
+        <Route
+          path="*"
+          element={<Navigate to="/parent" replace />}
+        />
+      </Route>
+
       <Route
         path="/admin"
         element={<AdminLayout />}
@@ -252,6 +281,12 @@ const App = () => {
         <Route
           path="students/documents"
           element={<StudentManagementPage initialView="documents" />}
+        />
+
+        {/* Fee Management */}
+        <Route
+          path="fees"
+          element={<FeesManagementPage />}
         />
 
         {/* Communication */}

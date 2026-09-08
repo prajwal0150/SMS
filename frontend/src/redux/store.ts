@@ -18,6 +18,9 @@ import academicReducer
 import schoolReducer
   from "../features/admin/School/redux/schoolSlice";
 
+import feesReducer
+  from "../features/admin/Fees/redux/feesSlice";
+
 
 export const store = configureStore({
   reducer: {
@@ -27,6 +30,7 @@ export const store = configureStore({
     communication: communicationReducer,
     academic: academicReducer,
     school: schoolReducer,
+    fees: feesReducer,
   },
 });
 

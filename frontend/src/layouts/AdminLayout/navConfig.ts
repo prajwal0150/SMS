@@ -7,6 +7,7 @@ import {
   FileText,
   FolderOpen,
   GraduationCap,
+  IndianRupee,
   Megaphone,
   School,
   Users,
@@ -35,6 +36,11 @@ export const adminNavGroups: AdminNavGroup[] = [
     id: "students",
     label: "Student Management",
     icon: GraduationCap,
+  },
+  {
+    id: "fees",
+    label: "Fee Management",
+    icon: IndianRupee,
   },
   {
     id: "communication",

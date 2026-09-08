@@ -11,7 +11,7 @@ import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 
 
-const TeacherLayout = () => {
+const ParentLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const isAuthenticated =
@@ -30,20 +30,15 @@ const TeacherLayout = () => {
   }
 
 
-  // The admin has their own panel - keep the teacher
-  // panel exclusive to teacher accounts.
+  // The admin has their own panel - keep the parent
+  // panel exclusive to parent accounts.
   if (isAdminEmail(user?.email)) {
     return <Navigate to="/admin/dashboard" replace />;
   }
 
 
-  // Parents and students have their own panels too.
-  if (user?.user_metadata?.role === "parent") {
-    return <Navigate to="/parent" replace />;
-  }
-
-  if (user?.user_metadata?.role === "student") {
-    return <Navigate to="/student" replace />;
+  if (user?.user_metadata?.role !== "parent") {
+    return <Navigate to="/teacher" replace />;
   }
 
 
@@ -79,4 +74,4 @@ const TeacherLayout = () => {
   );
 };
 
-export default TeacherLayout;
+export default ParentLayout;

@@ -334,23 +334,7 @@ const LoginPage = () => {
 
               </form>
 
-              {/* Demo admin credentials */}
-              <div className="mt-6 rounded-lg border border-dashed border-indigo-200 bg-indigo-50/50 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wider text-indigo-600">
-                  Demo admin login
-                </p>
-                <p className="mt-1.5 text-xs leading-5 text-slate-600">
-                  Username:{" "}
-                  <span className="font-semibold text-slate-800">
-                    schoolAdmin@gmail.com
-                  </span>
-                  <br />
-                  Password:{" "}
-                  <span className="font-semibold text-slate-800">
-                    admin123@
-                  </span>
-                </p>
-              </div>
+              
 
             </div>
 

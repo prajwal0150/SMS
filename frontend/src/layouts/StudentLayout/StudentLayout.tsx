@@ -37,6 +37,12 @@ const StudentLayout = () => {
   }
 
 
+  // Parents have their own panel.
+  if (user?.user_metadata?.role === "parent") {
+    return <Navigate to="/parent" replace />;
+  }
+
+
   // Teachers have their own panel too.
   if (user?.user_metadata?.role !== "student") {
     return <Navigate to="/teacher" replace />;

@@ -47,7 +47,7 @@ interface UserLike {
 
 // Where each account type lands after signing in:
 // admins -> admin panel, students -> student panel,
-// everything else -> teacher panel.
+// parents -> parent panel, everything else -> teacher panel.
 export const getUserHomePath = (
   user?: UserLike | null
 ): string => {
@@ -57,6 +57,10 @@ export const getUserHomePath = (
 
   if (user?.user_metadata?.role === "student") {
     return "/student";
+  }
+
+  if (user?.user_metadata?.role === "parent") {
+    return "/parent";
   }
 
   return "/teacher";
